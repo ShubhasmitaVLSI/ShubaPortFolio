@@ -12,7 +12,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/shubhasmitavlsi",
   github: "https://github.com/ShubhasmitaVLSI",
   tagline:
-    "IP and SoC verification, timing-aware validation, GLS-SDF, testchip verification, JTAG-based bring-up, assertions, coverage closure, emulation support and debug that holds up on silicon.",
+    "IP and SoC verification, timing-aware validation, GLS-SDF, testchip verification, JTAG-based verification and debug, assertions, coverage closure, emulation support and debug that holds up on silicon.",
 };
 
 export const marquee = [
@@ -40,17 +40,17 @@ export const metrics = [
   { value: 4.2, decimals: 1, suffix: "+", label: "Years in design verification", note: "IP · SoC · Testchip" },
   { value: 5, decimals: 0, suffix: "", label: "Verification domains", note: "IP · Testchip · GLS · Emulation · Automation" },
   { value: 3, decimals: 0, suffix: "", label: "Gate-level flows handled", note: "GLS · PG-GLS · GLS-SDF" },
-  { value: 2, decimals: 0, suffix: "", label: "Emulation modes supported", note: "Full & hybrid sim-emu" },
+  { value: 2, decimals: 0, suffix: "", label: "Engineering degrees", note: "B.Tech · M.Tech" },
 ];
 
 export const pills = [
   "IP verification",
   "Testchip verification",
-  "JTAG bring-up",
+  "JTAG verification & debug",
   "SDF back-annotation",
   "SVA property checks",
   "UPF / power-aware",
-  "ZeBu emulation support",
+  "Hardware emulation",
   "M.Tech · KIIT",
   "B.Tech · NIT Rourkela",
 ];
@@ -92,21 +92,21 @@ export const projects: Project[] = [
     period: "Multiple projects",
     org: "Synopsys",
     summary:
-      "IP integration, functional scenarios, coverage closure, JTAG-based bring-up and gate-level verification in chip context.",
+      "IP integration, functional scenarios, coverage closure, JTAG-based verification and debug, and gate-level verification.",
     tags: ["JTAG", "Integration", "GLS"],
     detail:
-      "Contributed to multiple testchip verification projects, covering IP integration, functional scenarios, coverage closure, JTAG-based verification and bring-up, and gate-level verification. Details are generalized to protect confidential program and process information.",
+      "Contributed to multiple testchip verification projects, covering IP integration, functional scenarios, coverage closure, JTAG-based verification and debug, and gate-level verification. Details are generalized to protect confidential program and process information.",
     bullets: [
       "IP integration checks inside the full-chip context",
       "Chip-level functional scenarios",
-      "Supported JTAG-based verification and bring-up scenarios",
+      "JTAG-based verification and debug",
       "Gate-level runs to confirm behavior after synthesis",
     ],
-    layers: ["IP integration", "Chip scenarios", "JTAG bring-up", "Coverage", "Gate level"],
+    layers: ["IP integration", "Chip scenarios", "JTAG verification", "Coverage", "Gate level"],
   },
   {
     id: "03",
-    title: "GLS-SDF & Timing-Aware Debug",
+    title: "Gate-Level & Timing-Aware Verification",
     period: "2023 — Now",
     org: "Synopsys",
     summary:
@@ -124,20 +124,20 @@ export const projects: Project[] = [
   },
   {
     id: "04",
-    title: "Emulation Support & SVA",
+    title: "Hardware Emulation & SVA",
     period: "2023 — Now",
     org: "Synopsys",
     summary:
-      "Emulation support across full and hybrid sim-emu flows, and SVA for earlier, sharper failure detection.",
-    tags: ["ZeBu", "Hybrid emu", "SVA"],
+      "Hardware-emulation-based verification and debug, and SVA for earlier, sharper failure detection.",
+    tags: ["Emulation", "SVA", "Debug"],
     detail:
-      "Supported full and hybrid simulation-emulation validation. Wrote SystemVerilog Assertions for IP behavior and control/protocol properties to improve observability, catch violations earlier and accelerate debug.",
+      "Supported hardware-emulation-based verification and debug. Wrote SystemVerilog Assertions for IP behavior and control/protocol properties to improve observability, catch violations earlier and accelerate debug.",
     bullets: [
-      "Full-emulation and hybrid simulation-emulation support",
+      "Hardware-emulation-based verification and debug",
       "Property-based checks for protocol and control behavior",
       "Faster root-cause through assertion-driven observability",
     ],
-    layers: ["Full emulation", "Hybrid sim-emu", "Assertions", "Debug"],
+    layers: ["Emulation", "Assertions", "Debug"],
   },
   {
     id: "05",
@@ -173,27 +173,8 @@ export const experience: Role[] = [
     period: "Jul 2023 — Present",
     org: "Synopsys",
     title: "R&D Senior Engineer",
-    blurb: "Hands-on verification across IP, testchip and silicon-oriented flows.",
-    duties: [
-      {
-        heading: "Verification",
-        items: [
-          "Contributed to multiple testchip verification projects: IP integration, functional scenarios, coverage and gate-level verification in chip context.",
-          "Performed IP-level functional verification with assertions, coverage closure and corner-aware checks.",
-          "Supported JTAG-based verification and bring-up scenarios.",
-          "Developed SystemVerilog Assertions for IP-level checking of protocol, control and functional behavior.",
-        ],
-      },
-      {
-        heading: "Sign-off & scale",
-        items: [
-          "Worked with GLS, power-aware GLS and GLS-SDF, debugging timing checks, setup/hold and X-propagation issues.",
-          "Supported full-emulation and hybrid simulation-emulation validation.",
-          "Automated RTL/GLS regression workflows with Python and Makefiles; validated low-power behavior with UPF concepts.",
-          "Collaborated across design, backend, verification and silicon-facing teams to root-cause functional and timing issues.",
-        ],
-      },
-    ],
+    blurb: "Design Verification Engineer with experience across IP and SoC verification.",
+    duties: [],
   },
   {
     period: "2021 — 2023",
@@ -248,7 +229,7 @@ export const stack = [
       "SDF back-annotation & timing checks",
       "X-propagation & setup/hold debug",
       "UPF / power-aware verification",
-      "JTAG-based bring-up support",
+      "JTAG-based verification & debug",
     ],
   },
   {
@@ -260,7 +241,7 @@ export const stack = [
       "Python, TCL, Makefiles",
       "Regression infrastructure",
       "Waveform debug & failure triage",
-      "ZeBu / emulation-flow support",
+      "ZeBu / hardware emulation",
     ],
   },
   {
@@ -359,7 +340,7 @@ export const certifications = [
 export const growth = {
   primary: [
     "Verification architecture for IP, subsystem, SoC and testchip programs",
-    "Advanced UVM environments, SVA strategy, coverage and sign-off quality",
+    "Advanced UVM environments, SVA strategy, coverage and verification closure quality",
     "GLS-SDF, X-propagation, low-power and timing-aware verification",
     "Emulation-aware verification and large-regression methodology",
     "Technical ownership, mentoring and cross-team verification strategy",

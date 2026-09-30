@@ -50,6 +50,7 @@ export default function Journey() {
             <p className="journey-role">
               <strong>{r.title}</strong>. {r.blurb}
             </p>
+            {r.duties.length > 0 && (
             <div className="duties">
               {r.duties.map((d) => (
                 <div key={d.heading}>
@@ -62,6 +63,7 @@ export default function Journey() {
                 </div>
               ))}
             </div>
+            )}
           </div>
         </article>
       ))}

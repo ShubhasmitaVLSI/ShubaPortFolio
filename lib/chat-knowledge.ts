@@ -53,10 +53,10 @@ export type SectionContext = { label: string; hint: string; questions: string[] 
 
 export const sectionContexts: Record<string, SectionContext> = {
   top: { label: "the introduction", hint: "the hero introduction", questions: [`What does ${first} do?`, "What's the tech stack?"] },
-  impact: { label: "the sign-off summary", hint: "the highlights and metrics", questions: ["What testchip work has she done?"] },
+  impact: { label: "the verification summary", hint: "the highlights and metrics", questions: ["What testchip work has she done?"] },
   about: { label: "the profile", hint: "the professional profile", questions: [`What are ${first}'s career goals?`] },
   work: { label: "the case files", hint: "the project cards", questions: ["Tell me about GLS-SDF debug", "What IP verification has she done?"] },
-  schema: { label: "the career schema", hint: "the ER diagram of the career (engineer, employer, projects, skills, flows, education, certifications, goals)", questions: ["Which sign-off flows are covered?"] },
+  schema: { label: "the career schema", hint: "the ER diagram of the career (engineer, employer, projects, skills, flows, education, certifications, goals)", questions: ["Which verification flows are covered?"] },
   experience: { label: "the timeline", hint: "the experience and education timeline", questions: [`What does ${first} do at Synopsys?`] },
   stack: { label: "the skill hierarchy", hint: "the UVM-style skill tree", questions: [`Which EDA tools does ${first} use?`] },
   approach: { label: "the engineering approach", hint: "the engineering approach section", questions: [`How does ${first} approach debug?`] },
@@ -129,7 +129,8 @@ export function localAnswer(question: string): string {
   );
   if (project) return `${project.title}: ${project.detail}\n- ${project.bullets.join("\n- ")}`;
   if (has(q, ["flow", "sign-off", "signoff"]))
-    return `Sign-off flows ${first} handles: GLS, power-aware GLS (PG-GLS), GLS-SDF with back-annotation and timing checks, plus full and hybrid emulation support. ${projects[2].detail}`;
+    return `Verification flows ${first} works with: GLS, power-aware GLS (PG-GLS) and GLS-SDF timing simulation, plus hardware-emulation-based verification. ${projects[2].detail}`;
+  if (has(q, ["ip verification", "ip-level", "ip level"])) return `${projects[0].title}: ${projects[0].detail}`;
   if (has(q, ["testchip", "jtag"])) return projects[1].detail;
   if (has(q, ["sdf", "gls", "timing", "x-prop"])) return projects[2].detail;
   if (has(q, ["emulat", "zebu", "sva", "assert"])) return projects[3].detail;
@@ -141,11 +142,14 @@ export function localAnswer(question: string): string {
       .map((r) => `${r.phase}: ${r.items.slice(0, 3).join(", ")}`)
       .join("\n- ")}`;
   if (has(q, ["ai", "rag", "llm", "agent", "langchain"]))
-    return `${first} treats AI as a productivity layer while sign-off stays with the engineer. Areas: ${aiUses
+    return `${first} treats AI as a productivity layer while engineering judgment stays with the engineer. Areas: ${aiUses
       .map((u) => u.title.toLowerCase())
       .join(", ")}.`;
   if (has(q, ["tool", "eda", "vcs", "verdi"])) return `Tools: ${stack[2].items.join(", ")}.`;
   if (has(q, ["debug", "approach", "method"])) return approach.map((a) => `- ${a.title}: ${a.body}`).join("\n");
-  if (has(q, ["synopsys", "experience", "work"])) return experience[0].duties.flatMap((d) => d.items).map((i) => `- ${i}`).join("\n");
+  if (has(q, ["synopsys", "experience", "work"])) {
+    const r = experience[0];
+    return `${first} has been ${r.title} at ${r.org} since July 2023. ${r.blurb}`;
+  }
   return `That detail is not listed on this portfolio. ${contact()}`;
 }

@@ -4,7 +4,7 @@
 /** Each section is tagged with a UVM phase, in real UVM phase order. */
 export const phases = [
   { id: "top", phase: "build_phase", label: "Intro" },
-  { id: "impact", phase: "connect_phase", label: "Sign-off summary" },
+  { id: "impact", phase: "connect_phase", label: "Verification summary" },
   { id: "about", phase: "end_of_elaboration", label: "Profile" },
   { id: "work", phase: "start_of_simulation", label: "Case files" },
   { id: "schema", phase: "reset_phase", label: "Career schema" },
@@ -47,14 +47,14 @@ export const glossary: Term[] = [
   {
     term: "GLS-SDF",
     full: "Gate-level sim + Standard Delay Format",
-    kind: "Sign-off",
+    kind: "Gate level",
     def: "Simulating the synthesized netlist with real cell and interconnect delays back-annotated from SDF, so timing checks run in simulation.",
     use: "SDF-annotated timing simulation and setup/hold debug.",
   },
   {
     term: "X-prop",
     full: "X-propagation",
-    kind: "Sign-off",
+    kind: "Gate level",
     def: "How unknown (X) values spread through logic. Analysing it catches reset and power-up issues that optimistic RTL simulation can hide.",
     use: "Tracing X sources across reset and power sequences.",
   },
@@ -91,7 +91,7 @@ export const glossary: Term[] = [
     full: "IEEE 1149.1 test access port",
     kind: "Silicon",
     def: "A serial test port for boundary scan, debug access and control of on-chip logic during bring-up.",
-    use: "JTAG-based verification and bring-up scenarios.",
+    use: "JTAG-based verification and debug.",
   },
   {
     term: "UPF",
@@ -105,7 +105,7 @@ export const glossary: Term[] = [
     full: "Hardware-accelerated verification",
     kind: "Scale",
     def: "Running the design on emulation hardware for far faster execution than simulation; hybrid flows pair a simulator with the emulator.",
-    use: "Full and hybrid emulation flow support.",
+    use: "Hardware-emulation-based verification and debug.",
   },
   {
     term: "CRV",
@@ -117,7 +117,7 @@ export const glossary: Term[] = [
   {
     term: "Setup / Hold",
     full: "Timing checks around a clock edge",
-    kind: "Sign-off",
+    kind: "Gate level",
     def: "Data must be stable for a window before (setup) and after (hold) the clock edge; SDF simulations report violations of either.",
     use: "Timing-check debug in SDF-annotated GLS.",
   },

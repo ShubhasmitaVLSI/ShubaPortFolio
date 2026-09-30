@@ -69,8 +69,8 @@ export default function Home() {
 
         <section id="atlas" data-reveal>
           <div className="section-head">
-            <div><p className="kicker">01 / Connected by design</p><h2>Explore the <em>engineering atlas.</em></h2></div>
-            <p>Every skill connects to real work. Select an entity to follow the relationship from verification expertise to a project and its flow.</p>
+            <div><p className="kicker">01 / Capability map</p><h2>Explore the <em>verification skills map.</em></h2></div>
+            <p>A map of core verification capabilities. Select one for a generalized summary; no project data is shown.</p>
           </div>
           <CircuitAtlas />
         </section>
@@ -78,7 +78,7 @@ export default function Home() {
         <section id="impact" data-reveal>
           <div className="section-head">
             <div>
-              <Kicker id="impact">Sign-off summary</Kicker>
+              <Kicker id="impact">Verification summary</Kicker>
               <h2>
                 Verification that <em>holds</em> on silicon.
               </h2>
@@ -100,7 +100,7 @@ export default function Home() {
             </h2>
             <p>
               I&apos;m a Design Verification Engineer with {profile.years} years across IP- and SoC-level verification.
-              My work spans IP verification, testchip verification, JTAG-based bring-up, timing-aware gate-level
+              My work spans IP verification, testchip verification, JTAG-based verification and debug, timing-aware gate-level
               simulation, assertion-based checking, power-aware verification, coverage closure, regression
               infrastructure and debug across RTL and netlist environments.
             </p>
@@ -149,7 +149,7 @@ export default function Home() {
               </h2>
             </div>
             <p>
-              The same story as an entity-relationship model: one engineer, the employer, projects, skills, sign-off
+              The same story as an entity-relationship model: one engineer, the employer, projects, skills, verification
               flows, education, certifications and goals, joined by what connects them.
             </p>
           </div>
@@ -281,12 +281,12 @@ export default function Home() {
             <div>
               <Kicker id="ai">AI-assisted VLSI</Kicker>
               <h2>
-                AI as a <em>layer</em>, sign-off stays human.
+                AI as a <em>layer</em>, judgment stays human.
               </h2>
             </div>
             <p>
               AI is there to speed up work and help find information. Architecture understanding, engineering
-              judgment, confidentiality and verification sign-off stay with the engineer.
+              judgment, confidentiality and final verification decisions stay with the engineer.
             </p>
           </div>
           <div className="ai-grid stagger">

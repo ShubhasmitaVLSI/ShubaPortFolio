@@ -19,8 +19,8 @@ test("home loads without runtime errors and fits the viewport", async ({ page })
 test("atlas selection opens the matching archive case", async ({ page }) => {
   await page.goto("/");
   const atlas = page.locator(".atlas-compact");
-  await atlas.getByRole("button", { name: /TIMING & GLS/ }).click();
-  await expect(atlas.locator(".atlas-detail h3")).toHaveText("GLS-SDF & Timing-Aware Debug");
+  await atlas.getByRole("button", { name: /GATE-LEVEL SIM/ }).click();
+  await expect(atlas.locator(".atlas-detail h3")).toHaveText("Gate-Level & Timing-Aware Verification");
   await atlas.screenshot({ path: `test-results/atlas-${test.info().project.name}.png` });
   await atlas.getByRole("link", { name: /Explore case file/ }).click();
   await expect(page).toHaveURL(/\/projects#project-03$/);
@@ -124,7 +124,7 @@ test("reduced motion keeps role readable", async ({ page }) => {
 test("all themes can be selected", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  for (const name of ["Circuit Atlas", "Nebula Netlist", "Orchid Assertion", "Rosé Gold Die", "Silicon Sign-off", "Phosphor Waveform", "Thermal Corner", "Blush Wafer", "Lilac Liberty", "Clean Room"]) {
+  for (const name of ["Circuit Atlas", "Nebula Netlist", "Orchid Assertion", "Rosé Gold Die", "Silicon Signal", "Phosphor Waveform", "Thermal Corner", "Blush Wafer", "Lilac Liberty", "Clean Room"]) {
     await page.getByRole("button", { name: "Change theme" }).click();
     const option = page.getByRole("menuitemradio", { name: new RegExp(name) });
     await option.click();

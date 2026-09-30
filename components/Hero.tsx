@@ -9,11 +9,11 @@ const roles = [
   "Design Verification Engineer",
   "GLS-SDF & timing-aware debug",
   "SVA & coverage closure",
-  "JTAG-based bring-up",
+  "JTAG-based verification & debug",
   "IP & testchip verification",
   "X-prop & setup/hold triage",
   "UVM · SVA · functional coverage",
-  "ZeBu emulation support",
+  "Hardware emulation support",
 ];
 
 function useRotatingType(words: string[]) {

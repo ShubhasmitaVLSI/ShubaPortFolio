@@ -23,7 +23,7 @@ export const skillTree: { root: { inst: string; label: string }; branches: Skill
     {
       id: "signoff",
       inst: "env.gls_agent",
-      label: "Gate-level sign-off",
+      label: "Gate-level / timing-aware verification",
       leaves: [
         { name: "GLS", note: "Gate-level simulation to confirm post-synthesis behavior." },
         { name: "PG-GLS", note: "Power-aware gate-level runs across power sequences." },
@@ -39,7 +39,7 @@ export const skillTree: { root: { inst: string; label: string }; branches: Skill
       leaves: [
         { name: "IP verification", note: "Assertion- and coverage-driven IP-level checks." },
         { name: "Testchip DV", note: "Multiple testchip verification projects in chip context." },
-        { name: "JTAG bring-up", note: "JTAG-based verification and bring-up scenarios." },
+        { name: "JTAG", note: "JTAG-based verification and debug." },
       ],
     },
     {
@@ -49,7 +49,7 @@ export const skillTree: { root: { inst: string; label: string }; branches: Skill
       leaves: [
         { name: "VCS · Verdi", note: "Simulation, waveform debug and failure triage." },
         { name: "PrimeTime", note: "Timing context for setup/hold and SDF-related debug." },
-        { name: "ZeBu", note: "Emulation support: full and hybrid simulation-emulation flows." },
+        { name: "ZeBu", note: "Hardware-emulation-based verification and debug." },
         { name: "APB · AXI", note: "AMBA transaction behavior, protocol checks and coverage." },
       ],
     },
@@ -222,7 +222,7 @@ export const schema: { width: number; height: number; entities: Entity[]; relati
     },
     {
       id: "flow",
-      label: "SIGNOFF_FLOW",
+      label: "VERIFICATION_FLOW",
       x: 830,
       y: 495,
       hue: 3,
@@ -235,7 +235,7 @@ export const schema: { width: number; height: number; entities: Entity[]; relati
         { flow_id: "1", name: "GLS", checks: "post-synthesis functional behavior" },
         { flow_id: "2", name: "PG-GLS", checks: "power-aware gate-level sequences" },
         { flow_id: "3", name: "GLS-SDF", checks: "timing checks, setup/hold, X-prop" },
-        { flow_id: "4", name: "Emulation", checks: "full + hybrid sim-emu validation" },
+        { flow_id: "4", name: "Emulation", checks: "hardware-emulation-based verification" },
       ],
     },
   ],

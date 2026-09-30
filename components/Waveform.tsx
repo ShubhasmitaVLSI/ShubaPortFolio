@@ -77,21 +77,21 @@ function busSegments(bus: Bus, y0: number) {
   });
 }
 
-const signals = ["clk", "jtag.tck", "jtag.tms", "jtag.tdi", "valid", "data[15:0]", "sva.chk"];
+const signals = ["clk", "rst_n", "req", "ack", "valid", "data", "chk"];
 
 export default function Waveform() {
   const total = N * W * 2;
   const H = signals.length * ROW + 6;
 
   return (
-    <section className="wave-wrap" aria-label="Decorative waveform viewer" data-reveal>
+    <section className="wave-wrap" aria-label="Illustrative waveform, no project data" data-reveal>
       <div className="wave">
         <div className="wave-bar">
           <span className="wave-title">
-            <i className="dot g" /> waves.fsdb
+            <i className="dot g" /> demo_waveform.fsdb
           </span>
           <span className="wave-meta">
-            <b>cursor</b> 1,284 ns · <b>zoom</b> 1:1 · <b>SDF</b> annotated
+            Illustrative waveform · no project data
           </span>
         </div>
         <div className="wave-body">

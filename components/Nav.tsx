@@ -17,7 +17,7 @@ export const themes = [
   { id: "nebula", name: "Nebula Netlist", hint: "Violet · mint · coral", corner: "tt 0.80V 25°C", tone: "dark" },
   { id: "orchid", name: "Orchid Assertion", hint: "Plum · orchid · peach", corner: "ss 0.72V 125°C", tone: "dark" },
   { id: "rose", name: "Rosé Gold Die", hint: "Rose gold · lavender", corner: "ff 0.88V -40°C", tone: "dark" },
-  { id: "silicon", name: "Silicon Sign-off", hint: "Indigo · cyan", corner: "tt 0.75V 85°C", tone: "dark" },
+  { id: "silicon", name: "Silicon Signal", hint: "Indigo · cyan", corner: "tt 0.75V 85°C", tone: "dark" },
   { id: "phosphor", name: "Phosphor Waveform", hint: "Verdi green", corner: "sf 0.80V 0°C", tone: "dark" },
   { id: "thermal", name: "Thermal Corner", hint: "Amber · magenta", corner: "ss 0.72V 150°C", tone: "dark" },
   { id: "blush", name: "Blush Wafer", hint: "Blush · berry · violet", corner: "ff 0.99V 0°C", tone: "light" },

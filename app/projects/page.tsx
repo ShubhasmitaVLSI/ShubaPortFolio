@@ -32,7 +32,7 @@ export default function Projects() {
             Every <em>case file</em>, end to end.
           </h1>
           <p className="lede reveal d2">
-            Verification work across IP, testchip and silicon-oriented flows. Implementation, program and process details
+            Verification work across IP, testchip and gate-level work. Implementation, program and process details
             are intentionally generalized.
           </p>
         </section>
