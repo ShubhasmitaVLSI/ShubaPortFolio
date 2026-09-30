@@ -6,7 +6,7 @@ import { profile, projects } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: `Project archive — ${profile.name}`,
-  description: "Design verification case files: PVT sensor IP, testchips, GLS-SDF, emulation, SVA and automation.",
+  description: "Design verification case files: IP verification, testchips, GLS-SDF, emulation, SVA and automation.",
 };
 
 export default function Projects() {

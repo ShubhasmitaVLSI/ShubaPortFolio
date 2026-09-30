@@ -13,7 +13,7 @@ const mono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500"], variab
 export const metadata: Metadata = {
   title: "Shubhasmita Sahoo — Design Verification Engineer",
   description:
-    "Portfolio of Shubhasmita Sahoo, Design Verification Engineer at Synopsys. IP, SoC and testchip verification, GLS-SDF, PVT sensor IP, JTAG, SVA, coverage closure and emulation support.",
+    "Portfolio of Shubhasmita Sahoo, Design Verification Engineer at Synopsys. IP, SoC and testchip verification, GLS-SDF, JTAG, SVA, coverage closure and emulation support.",
   keywords: seoKeywords,
   authors: [{ name: "Shubhasmita Sahoo", url: "https://www.linkedin.com/in/shubhasmitavlsi" }],
   openGraph: {

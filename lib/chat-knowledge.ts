@@ -53,9 +53,9 @@ export type SectionContext = { label: string; hint: string; questions: string[] 
 
 export const sectionContexts: Record<string, SectionContext> = {
   top: { label: "the introduction", hint: "the hero introduction", questions: [`What does ${first} do?`, "What's the tech stack?"] },
-  impact: { label: "the sign-off summary", hint: "the highlights and metrics", questions: ["How many testchips has she verified?"] },
+  impact: { label: "the sign-off summary", hint: "the highlights and metrics", questions: ["What testchip work has she done?"] },
   about: { label: "the profile", hint: "the professional profile", questions: [`What are ${first}'s career goals?`] },
-  work: { label: "the case files", hint: "the project cards", questions: ["Tell me about GLS-SDF debug", "What was the PVT sensor IP work?"] },
+  work: { label: "the case files", hint: "the project cards", questions: ["Tell me about GLS-SDF debug", "What IP verification has she done?"] },
   schema: { label: "the career schema", hint: "the ER diagram of the career (engineer, employer, projects, skills, flows, education, certifications, goals)", questions: ["Which sign-off flows are covered?"] },
   experience: { label: "the timeline", hint: "the experience and education timeline", questions: [`What does ${first} do at Synopsys?`] },
   stack: { label: "the skill hierarchy", hint: "the UVM-style skill tree", questions: [`Which EDA tools does ${first} use?`] },

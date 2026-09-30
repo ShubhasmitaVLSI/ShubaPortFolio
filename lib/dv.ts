@@ -49,7 +49,7 @@ export const glossary: Term[] = [
     full: "Gate-level sim + Standard Delay Format",
     kind: "Sign-off",
     def: "Simulating the synthesized netlist with real cell and interconnect delays back-annotated from SDF, so timing checks run in simulation.",
-    use: "SDF annotation, setup/hold and annotation-issue debug.",
+    use: "SDF-annotated timing simulation and setup/hold debug.",
   },
   {
     term: "X-prop",
@@ -83,15 +83,15 @@ export const glossary: Term[] = [
     term: "PVT",
     full: "Process · Voltage · Temperature",
     kind: "Silicon",
-    def: "The operating extremes a chip must survive. PVT sensor IP monitors these conditions on silicon.",
-    use: "Behavioral-model, corner-oriented PVT IP validation.",
+    def: "The operating extremes a chip must survive, checked as process, voltage and temperature corners.",
+    use: "Corner-aware functional checks.",
   },
   {
     term: "JTAG",
     full: "IEEE 1149.1 test access port",
     kind: "Silicon",
     def: "A serial test port for boundary scan, debug access and control of on-chip logic during bring-up.",
-    use: "Testchip access, control paths and bring-up debug.",
+    use: "JTAG-based verification and bring-up scenarios.",
   },
   {
     term: "UPF",
@@ -105,7 +105,7 @@ export const glossary: Term[] = [
     full: "Hardware-accelerated verification",
     kind: "Scale",
     def: "Running the design on emulation hardware for far faster execution than simulation; hybrid flows pair a simulator with the emulator.",
-    use: "PVT behavioral-model enablement on ZeBu flows.",
+    use: "Full and hybrid emulation flow support.",
   },
   {
     term: "CRV",
@@ -119,7 +119,7 @@ export const glossary: Term[] = [
     full: "Timing checks around a clock edge",
     kind: "Sign-off",
     def: "Data must be stable for a window before (setup) and after (hold) the clock edge; SDF simulations report violations of either.",
-    use: "Timing-check triage in GLS-SDF regressions.",
+    use: "Timing-check debug in SDF-annotated GLS.",
   },
   {
     term: "Scoreboard",
@@ -149,7 +149,6 @@ export const seoKeywords = [
   "X-propagation",
   "UPF",
   "Power-aware verification",
-  "PVT sensor",
   "JTAG",
   "AMBA APB AXI",
   "Emulation",

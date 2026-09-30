@@ -4,7 +4,7 @@ import { useState } from "react";
 import { profile, projects } from "@/lib/data";
 
 const nodes = [
-  { label: "PVT SENSOR IP", relation: "models", x: 0, y: 0 },
+  { label: "IP VERIFICATION", relation: "verifies", x: 0, y: 0 },
   { label: "TESTCHIP", relation: "integrates", x: 2, y: 0 },
   { label: "TIMING & GLS", relation: "validates", x: 0, y: 2 },
   { label: "EMULATION", relation: "scales", x: 2, y: 2 },

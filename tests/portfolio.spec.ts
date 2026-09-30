@@ -46,7 +46,7 @@ test("project modal traps keyboard focus and restores it", async ({ page }) => {
   await page.goto("/");
   const card = page.locator(".rail .card").first();
   await card.click();
-  const dialog = page.getByRole("dialog", { name: "PVT Sensor IP Verification" });
+  const dialog = page.getByRole("dialog", { name: "IP Verification" });
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Tab");
   await expect(dialog.getByRole("button", { name: "Close", exact: true })).toBeFocused();

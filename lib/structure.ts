@@ -27,8 +27,8 @@ export const skillTree: { root: { inst: string; label: string }; branches: Skill
       leaves: [
         { name: "GLS", note: "Gate-level simulation to confirm post-synthesis behavior." },
         { name: "PG-GLS", note: "Power-aware gate-level runs across power sequences." },
-        { name: "GLS-SDF", note: "SDF back-annotation with timing checks and annotation debug." },
-        { name: "X-propagation", note: "X sources traced through reset and power sequences." },
+        { name: "GLS-SDF", note: "SDF-annotated timing simulation and timing checks." },
+        { name: "X-propagation", note: "X-propagation debug at gate level." },
         { name: "UPF", note: "Low-power intent validated with UPF concepts." },
       ],
     },
@@ -37,10 +37,9 @@ export const skillTree: { root: { inst: string; label: string }; branches: Skill
       inst: "env.silicon_agent",
       label: "Silicon & testchip",
       leaves: [
-        { name: "PVT sensor IP", note: "Behavioral-model-based, corner-oriented validation and correlation." },
-        { name: "Testchip × 3", note: "IP integration, firmware scenarios and gate level in chip context." },
-        { name: "JTAG bring-up", note: "JTAG access and control paths for bring-up and debug." },
-        { name: "Liberty correlation", note: "Liberty-model correlation and validation support." },
+        { name: "IP verification", note: "Assertion- and coverage-driven IP-level checks." },
+        { name: "Testchip DV", note: "Multiple testchip verification projects in chip context." },
+        { name: "JTAG bring-up", note: "JTAG-based verification and bring-up scenarios." },
       ],
     },
     {
@@ -235,7 +234,7 @@ export const schema: { width: number; height: number; entities: Entity[]; relati
       rows: [
         { flow_id: "1", name: "GLS", checks: "post-synthesis functional behavior" },
         { flow_id: "2", name: "PG-GLS", checks: "power-aware gate-level sequences" },
-        { flow_id: "3", name: "GLS-SDF", checks: "SDF annotation, setup/hold, X-prop" },
+        { flow_id: "3", name: "GLS-SDF", checks: "timing checks, setup/hold, X-prop" },
         { flow_id: "4", name: "Emulation", checks: "full + hybrid sim-emu validation" },
       ],
     },

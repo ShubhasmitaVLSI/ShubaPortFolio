@@ -12,7 +12,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/shubhasmitavlsi",
   github: "https://github.com/sashikantcodex",
   tagline:
-    "IP and SoC verification, timing-aware validation, GLS-SDF, PVT sensor IP, testchip bring-up over JTAG, assertions, coverage closure, emulation support and debug that holds up on silicon.",
+    "IP and SoC verification, timing-aware validation, GLS-SDF, testchip verification, JTAG-based bring-up, assertions, coverage closure, emulation support and debug that holds up on silicon.",
 };
 
 export const marquee = [
@@ -38,14 +38,14 @@ export const marquee = [
 
 export const metrics = [
   { value: 4.2, decimals: 1, suffix: "+", label: "Years in design verification", note: "IP · SoC · Testchip" },
-  { value: 3, decimals: 0, suffix: "", label: "Testchip projects verified", note: "Integration to gate level" },
+  { value: 5, decimals: 0, suffix: "", label: "Verification domains", note: "IP · Testchip · GLS · Emulation · Automation" },
   { value: 3, decimals: 0, suffix: "", label: "Gate-level flows handled", note: "GLS · PG-GLS · GLS-SDF" },
   { value: 2, decimals: 0, suffix: "", label: "Emulation modes supported", note: "Full & hybrid sim-emu" },
 ];
 
 export const pills = [
-  "PVT sensor IP",
-  "Testchip DV × 3",
+  "IP verification",
+  "Testchip verification",
   "JTAG bring-up",
   "SDF back-annotation",
   "SVA property checks",
@@ -70,39 +70,39 @@ export type Project = {
 export const projects: Project[] = [
   {
     id: "01",
-    title: "PVT Sensor IP Verification",
+    title: "IP Verification",
     period: "2023 — Now",
     org: "Synopsys",
     summary:
-      "Behavioral-model-based validation, corner-oriented checks, assertions, coverage and timing-aware debug for PVT sensor IP.",
+      "IP-level functional verification with assertions, coverage closure, corner-aware checks and timing-aware debug.",
     tags: ["SystemVerilog", "SVA", "Coverage"],
     detail:
-      "Verified PVT sensor IP through behavioral-model-based validation, corner-oriented functional checks, assertions, coverage analysis, timing-aware debug and correlation-oriented verification. Supported scalable validation while keeping implementation and program details confidential.",
+      "Contributed to IP-level functional verification using assertions, coverage analysis, corner-aware functional checks and timing-aware debug. Implementation and program details are kept confidential.",
     bullets: [
-      "Behavioral models driven across process, voltage and temperature corners",
-      "Model-to-simulation correlation for functional robustness",
+      "Feature-based test plans for IP-level functionality",
+      "Corner-aware functional checks",
       "SVA properties for control, protocol and functional behavior",
       "Functional and code coverage closure against a feature-based plan",
     ],
-    layers: ["Behavioral model", "Corner stimulus", "Assertions", "Coverage", "Correlation"],
+    layers: ["Test plan", "Stimulus", "Assertions", "Coverage", "Debug"],
   },
   {
     id: "02",
     title: "Testchip Verification",
-    period: "3 projects",
+    period: "Multiple projects",
     org: "Synopsys",
     summary:
-      "IP integration, functional and firmware-oriented scenarios, coverage closure, JTAG bring-up and gate-level verification in chip context.",
-    tags: ["JTAG", "Firmware tests", "GLS"],
+      "IP integration, functional scenarios, coverage closure, JTAG-based bring-up and gate-level verification in chip context.",
+    tags: ["JTAG", "Integration", "GLS"],
     detail:
-      "Contributed to verification across three testchip projects, covering IP integration, functional scenarios, firmware-oriented validation, coverage closure, JTAG-related bring-up and debug, and gate-level verification. Details are generalized to protect confidential program and process information.",
+      "Contributed to multiple testchip verification projects, covering IP integration, functional scenarios, coverage closure, JTAG-based verification and bring-up, and gate-level verification. Details are generalized to protect confidential program and process information.",
     bullets: [
       "IP integration checks inside the full-chip context",
-      "Firmware-oriented scenarios exercised through real access paths",
-      "JTAG used for access, control and bring-up debug",
+      "Chip-level functional scenarios",
+      "Supported JTAG-based verification and bring-up scenarios",
       "Gate-level runs to confirm behavior after synthesis",
     ],
-    layers: ["IP integration", "Firmware scenarios", "JTAG access", "Coverage", "Gate level"],
+    layers: ["IP integration", "Chip scenarios", "JTAG bring-up", "Coverage", "Gate level"],
   },
   {
     id: "03",
@@ -110,17 +110,17 @@ export const projects: Project[] = [
     period: "2023 — Now",
     org: "Synopsys",
     summary:
-      "SDF annotation, timing checks, X-propagation, setup/hold failures and RTL-to-netlist correlation across GLS regressions.",
+      "Gate-level simulation skills: SDF-annotated timing simulation, setup/hold checks and X-propagation debug.",
     tags: ["GLS-SDF", "PG-GLS", "PrimeTime"],
     detail:
-      "Handled GLS, power-aware GLS and GLS-SDF regression and debug, including SDF back-annotation, timing-check analysis, X-propagation, setup/hold-related failures, annotation issues, and correlation of functional behavior between RTL and netlist environments.",
+      "Worked with gate-level simulation, including power-aware GLS and SDF-annotated timing simulation, debugging setup/hold timing checks and X-propagation issues.",
     bullets: [
-      "SDF back-annotation and annotation-coverage issue debug",
-      "Setup/hold timing-check violations traced to root cause",
-      "X-propagation analysis across reset and power sequences",
-      "RTL vs netlist functional correlation in regression",
+      "Gate-level and power-aware gate-level simulation",
+      "SDF back-annotated timing simulation",
+      "Setup/hold timing-check debug",
+      "X-propagation debug",
     ],
-    layers: ["Netlist", "SDF annotate", "Timing checks", "X-prop triage", "RTL correlation"],
+    layers: ["Netlist", "SDF timing", "Timing checks", "X-prop debug", "Root cause"],
   },
   {
     id: "04",
@@ -128,17 +128,16 @@ export const projects: Project[] = [
     period: "2023 — Now",
     org: "Synopsys",
     summary:
-      "Behavioral-model enablement for emulation, full and hybrid sim-emu flows, and SVA for earlier, sharper failure detection.",
+      "Emulation support across full and hybrid sim-emu flows, and SVA for earlier, sharper failure detection.",
     tags: ["ZeBu", "Hybrid emu", "SVA"],
     detail:
-      "Supported emulation enablement for PVT IP behavioral models and hybrid/full-emulation validation flows. Wrote SystemVerilog Assertions for IP behavior and control/protocol properties to improve observability, catch violations earlier and accelerate debug.",
+      "Supported full and hybrid simulation-emulation validation. Wrote SystemVerilog Assertions for IP behavior and control/protocol properties to improve observability, catch violations earlier and accelerate debug.",
     bullets: [
-      "Made behavioral models compatible with emulation flows",
-      "Supported full-emulation and hybrid simulation-emulation validation",
+      "Full-emulation and hybrid simulation-emulation support",
       "Property-based checks for protocol and control behavior",
       "Faster root-cause through assertion-driven observability",
     ],
-    layers: ["Model enablement", "Full emulation", "Hybrid sim-emu", "Assertions", "Debug"],
+    layers: ["Full emulation", "Hybrid sim-emu", "Assertions", "Debug"],
   },
   {
     id: "05",
@@ -149,12 +148,12 @@ export const projects: Project[] = [
       "Python and Makefile-driven RTL/GLS regression workflows, triage and repeatable flows that keep engineering time on real debug.",
     tags: ["Python", "TCL", "Makefiles"],
     detail:
-      "Automated RTL and GLS regression workflows using Python and Makefiles, created feature-based test plans, supported Liberty-model correlation and validated low-power behavior using UPF concepts.",
+      "Automated RTL and GLS regression workflows using Python and Makefiles, created feature-based test plans and validated low-power behavior using UPF concepts.",
     bullets: [
       "Automated RTL and GLS regression launch and reporting",
       "Feature-based test plans with traceability to coverage",
       "Low-power behavior validated with UPF concepts",
-      "Liberty-model correlation support",
+      "Failure triage that speeds up debug",
     ],
     layers: ["Test plan", "Regression", "Triage", "Coverage report", "Standardize"],
   },
@@ -179,17 +178,17 @@ export const experience: Role[] = [
       {
         heading: "Verification",
         items: [
-          "Contributed to testchip verification across three projects: IP integration, functional behavior, firmware-oriented scenarios, coverage and gate-level flows in chip context.",
-          "Verified PVT sensor IP using behavioral models and corner-oriented validation, with attention to functional robustness and model-to-simulation correlation.",
-          "Worked on JTAG-based bring-up and verification, using the interface for access and control paths across verification and silicon-oriented scenarios.",
+          "Contributed to multiple testchip verification projects: IP integration, functional scenarios, coverage and gate-level verification in chip context.",
+          "Performed IP-level functional verification with assertions, coverage closure and corner-aware checks.",
+          "Supported JTAG-based verification and bring-up scenarios.",
           "Developed SystemVerilog Assertions for IP-level checking of protocol, control and functional behavior.",
         ],
       },
       {
         heading: "Sign-off & scale",
         items: [
-          "Handled GLS, power-aware GLS and GLS-SDF: SDF back-annotation, timing checks, X-propagation, setup/hold debug and annotation issues.",
-          "Provided emulation support for PVT IP, enabling behavioral models for full-emulation and hybrid simulation-emulation validation.",
+          "Worked with GLS, power-aware GLS and GLS-SDF, debugging timing checks, setup/hold and X-propagation issues.",
+          "Supported full-emulation and hybrid simulation-emulation validation.",
           "Automated RTL/GLS regression workflows with Python and Makefiles; validated low-power behavior with UPF concepts.",
           "Collaborated across design, backend, verification and silicon-facing teams to root-cause functional and timing issues.",
         ],
@@ -249,8 +248,7 @@ export const stack = [
       "SDF back-annotation & timing checks",
       "X-propagation & setup/hold debug",
       "UPF / power-aware verification",
-      "PVT sensor IP validation",
-      "Liberty-model validation support",
+      "JTAG-based bring-up support",
     ],
   },
   {

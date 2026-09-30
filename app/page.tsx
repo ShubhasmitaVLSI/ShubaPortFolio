@@ -84,7 +84,7 @@ export default function Home() {
               </h2>
             </div>
             <p>
-              From behavioral models to back-annotated netlists, each layer closes a different class of risk before
+              From RTL to back-annotated netlists, each layer closes a different class of risk before
               tape-out.
             </p>
           </div>
@@ -100,7 +100,7 @@ export default function Home() {
             </h2>
             <p>
               I&apos;m a Design Verification Engineer with {profile.years} years across IP- and SoC-level verification.
-              My work spans PVT sensor IP, testchip verification, JTAG-based access and bring-up, timing-aware gate-level
+              My work spans IP verification, testchip verification, JTAG-based bring-up, timing-aware gate-level
               simulation, assertion-based checking, power-aware verification, coverage closure, regression
               infrastructure and debug across RTL and netlist environments.
             </p>
@@ -124,7 +124,7 @@ export default function Home() {
             <div>
               <Kicker id="work">Case files</Kicker>
               <h2>
-                From <em>behavioral model</em> to netlist.
+                From <em>RTL</em> to netlist.
               </h2>
             </div>
             <div>
