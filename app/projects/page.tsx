@@ -6,7 +6,7 @@ import { profile, projects } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: `Project archive — ${profile.name}`,
-  description: "Design verification case files: IP verification, testchips, GLS-SDF, emulation, SVA and automation.",
+  description: "Design verification case files: IP verification, SoC verification, GLS-SDF, emulation, SVA and automation.",
 };
 
 export default function Projects() {
@@ -32,7 +32,7 @@ export default function Projects() {
             Every <em>case file</em>, end to end.
           </h1>
           <p className="lede reveal d2">
-            Verification work across IP, testchip and gate-level work. Implementation, program and process details
+            Verification work across IP, SoC and gate-level work. Implementation, program and process details
             are intentionally generalized.
           </p>
         </section>

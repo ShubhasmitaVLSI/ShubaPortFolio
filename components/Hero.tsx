@@ -9,8 +9,8 @@ const roles = [
   "Design Verification Engineer",
   "GLS-SDF & timing-aware debug",
   "SVA & coverage closure",
-  "JTAG-based verification & debug",
-  "IP & testchip verification",
+  "FIFO verification",
+  "IP & SoC verification",
   "X-prop & setup/hold triage",
   "UVM · SVA · functional coverage",
   "Hardware emulation support",
@@ -98,7 +98,7 @@ export default function Hero() {
           <span>
             <strong>{profile.years} yrs</strong> · Design Verification
           </span>
-          <span>IP · SoC · Testchip</span>
+          <span>IP · SoC · Gate level</span>
           <span>Growing toward Staff / Principal-track DV</span>
         </div>
       </div>

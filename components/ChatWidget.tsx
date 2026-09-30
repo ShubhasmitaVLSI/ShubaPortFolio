@@ -17,7 +17,7 @@ function hello() {
   return {
     title: `Good ${word}`,
     icon,
-    message: `Good ${word} ${icon} I'm ${first}'s portfolio assistant. Ask me about verification work, testchips, GLS-SDF, the tech stack, or how to connect.`,
+    message: `Good ${word} ${icon} I'm ${first}'s portfolio assistant. Ask me about verification work, SoC verification, GLS-SDF, the tech stack, or how to connect.`,
   };
 }
 

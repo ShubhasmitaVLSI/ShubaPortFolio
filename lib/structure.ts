@@ -35,11 +35,11 @@ export const skillTree: { root: { inst: string; label: string }; branches: Skill
     {
       id: "silicon",
       inst: "env.silicon_agent",
-      label: "Silicon & testchip",
+      label: "IP & SoC",
       leaves: [
         { name: "IP verification", note: "Assertion- and coverage-driven IP-level checks." },
-        { name: "Testchip DV", note: "Multiple testchip verification projects in chip context." },
-        { name: "JTAG", note: "JTAG-based verification and debug." },
+        { name: "SoC DV", note: "SoC-level verification and IP integration." },
+        { name: "FIFO", note: "FIFO ordering, full/empty and overflow/underflow checks." },
       ],
     },
     {

@@ -21,7 +21,7 @@ const traces = [
 
 const blocks = [
   { x: 66, y: 66, w: 56, h: 30, label: "IP" },
-  { x: 280, y: 66, w: 56, h: 30, label: "JTAG" },
+  { x: 280, y: 66, w: 56, h: 30, label: "FIFO" },
   { x: 66, y: 306, w: 56, h: 30, label: "PLL" },
   { x: 280, y: 306, w: 56, h: 30, label: "AXI" },
 ];

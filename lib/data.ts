@@ -12,7 +12,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/shubhasmitavlsi",
   github: "https://github.com/ShubhasmitaVLSI",
   tagline:
-    "IP and SoC verification, timing-aware validation, GLS-SDF, testchip verification, JTAG-based verification and debug, assertions, coverage closure, emulation support and debug that holds up on silicon.",
+    "IP and SoC verification, timing-aware validation, GLS-SDF, FIFO verification, assertions, coverage closure, emulation support and debug that holds up on silicon.",
 };
 
 export const marquee = [
@@ -22,7 +22,7 @@ export const marquee = [
   "GLS-SDF",
   "PG-GLS",
   "UPF",
-  "JTAG",
+  "FIFO",
   "APB",
   "AXI / AXI-Lite",
   "VCS",
@@ -37,16 +37,16 @@ export const marquee = [
 ];
 
 export const metrics = [
-  { value: 4.2, decimals: 1, suffix: "+", label: "Years in design verification", note: "IP · SoC · Testchip" },
-  { value: 5, decimals: 0, suffix: "", label: "Verification domains", note: "IP · Testchip · GLS · Emulation · Automation" },
+  { value: 4.2, decimals: 1, suffix: "+", label: "Years in design verification", note: "IP · SoC · Gate level" },
+  { value: 5, decimals: 0, suffix: "", label: "Verification domains", note: "IP · SoC · GLS · Emulation · Automation" },
   { value: 3, decimals: 0, suffix: "", label: "Gate-level flows handled", note: "GLS · PG-GLS · GLS-SDF" },
   { value: 2, decimals: 0, suffix: "", label: "Engineering degrees", note: "B.Tech · M.Tech" },
 ];
 
 export const pills = [
   "IP verification",
-  "Testchip verification",
-  "JTAG verification & debug",
+  "SoC verification",
+  "FIFO verification",
   "SDF back-annotation",
   "SVA property checks",
   "UPF / power-aware",
@@ -88,21 +88,21 @@ export const projects: Project[] = [
   },
   {
     id: "02",
-    title: "Testchip Verification",
+    title: "SoC Verification",
     period: "Multiple projects",
     org: "Synopsys",
     summary:
-      "IP integration, functional scenarios, coverage closure, JTAG-based verification and debug, and gate-level verification.",
-    tags: ["JTAG", "Integration", "GLS"],
+      "IP integration, functional scenarios, coverage closure, FIFO verification and gate-level verification in SoC context.",
+    tags: ["FIFO", "Integration", "GLS"],
     detail:
-      "Contributed to multiple testchip verification projects, covering IP integration, functional scenarios, coverage closure, JTAG-based verification and debug, and gate-level verification. Details are generalized to protect confidential program and process information.",
+      "Contributed to SoC verification, covering IP integration, functional scenarios, coverage closure, FIFO verification and gate-level verification. Details are generalized to protect confidential program and process information.",
     bullets: [
       "IP integration checks inside the full-chip context",
-      "Chip-level functional scenarios",
-      "JTAG-based verification and debug",
+      "SoC-level functional scenarios",
+      "FIFO ordering, full/empty and overflow/underflow checks",
       "Gate-level runs to confirm behavior after synthesis",
     ],
-    layers: ["IP integration", "Chip scenarios", "JTAG verification", "Coverage", "Gate level"],
+    layers: ["IP integration", "SoC scenarios", "FIFO checks", "Coverage", "Gate level"],
   },
   {
     id: "03",
@@ -218,7 +218,7 @@ export const stack = [
       "SVA / assertion-based verification",
       "Functional & code coverage",
       "Test planning & traceability",
-      "IP / SoC / testchip verification",
+      "IP / SoC verification",
     ],
   },
   {
@@ -229,7 +229,7 @@ export const stack = [
       "SDF back-annotation & timing checks",
       "X-propagation & setup/hold debug",
       "UPF / power-aware verification",
-      "JTAG-based verification & debug",
+      "FIFO verification",
     ],
   },
   {
@@ -237,7 +237,7 @@ export const stack = [
     icon: "tools",
     items: [
       "VCS, Verdi, PrimeTime",
-      "JTAG, APB, AXI / AXI-Lite",
+      "FIFO, APB, AXI / AXI-Lite",
       "Python, TCL, Makefiles",
       "Regression infrastructure",
       "Waveform debug & failure triage",
@@ -339,7 +339,7 @@ export const certifications = [
 
 export const growth = {
   primary: [
-    "Verification architecture for IP, subsystem, SoC and testchip programs",
+    "Verification architecture for IP, subsystem and SoC programs",
     "Advanced UVM environments, SVA strategy, coverage and verification closure quality",
     "GLS-SDF, X-propagation, low-power and timing-aware verification",
     "Emulation-aware verification and large-regression methodology",

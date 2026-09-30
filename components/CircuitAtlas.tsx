@@ -5,7 +5,7 @@ import { profile, projects } from "@/lib/data";
 
 const nodes = [
   { label: "IP VERIFICATION", x: 0, y: 0 },
-  { label: "SOC / TESTCHIP DV", x: 2, y: 0 },
+  { label: "SOC VERIFICATION", x: 2, y: 0 },
   { label: "GATE-LEVEL SIM", x: 0, y: 2 },
   { label: "HW EMULATION", x: 2, y: 2 },
   { label: "DV AUTOMATION", x: 1, y: 3 },

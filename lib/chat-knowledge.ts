@@ -53,7 +53,7 @@ export type SectionContext = { label: string; hint: string; questions: string[] 
 
 export const sectionContexts: Record<string, SectionContext> = {
   top: { label: "the introduction", hint: "the hero introduction", questions: [`What does ${first} do?`, "What's the tech stack?"] },
-  impact: { label: "the verification summary", hint: "the highlights and metrics", questions: ["What testchip work has she done?"] },
+  impact: { label: "the verification summary", hint: "the highlights and metrics", questions: ["What SoC verification has she done?"] },
   about: { label: "the profile", hint: "the professional profile", questions: [`What are ${first}'s career goals?`] },
   work: { label: "the case files", hint: "the project cards", questions: ["Tell me about GLS-SDF debug", "What IP verification has she done?"] },
   schema: { label: "the career schema", hint: "the ER diagram of the career (engineer, employer, projects, skills, flows, education, certifications, goals)", questions: ["Which verification flows are covered?"] },
@@ -69,7 +69,7 @@ export const sectionContexts: Record<string, SectionContext> = {
 
 export const suggestedQuestions = [
   `What does ${first} do?`,
-  "Tell me about the testchip work",
+  "Tell me about the SoC verification work",
   "What's the tech stack?",
   `How can I reach ${first}?`,
 ];
@@ -77,7 +77,7 @@ export const suggestedQuestions = [
 export const guideActions = [
   { label: "Quick intro", detail: "Role, focus and experience", question: `What does ${first} do?` },
   { label: "Verification depth", detail: "GLS-SDF, SVA, emulation", question: "Tell me about her GLS-SDF and SVA work" },
-  { label: "Testchip programs", detail: "Integration to gate level", question: "Tell me about the testchip work" },
+  { label: "SoC verification", detail: "Integration to gate level", question: "Tell me about the SoC verification work" },
   { label: "Where she's heading", detail: "Staff / Principal-track DV", question: `What are ${first}'s career goals?` },
 ];
 
@@ -131,7 +131,7 @@ export function localAnswer(question: string): string {
   if (has(q, ["flow", "sign-off", "signoff"]))
     return `Verification flows ${first} works with: GLS, power-aware GLS (PG-GLS) and GLS-SDF timing simulation, plus hardware-emulation-based verification. ${projects[2].detail}`;
   if (has(q, ["ip verification", "ip-level", "ip level"])) return `${projects[0].title}: ${projects[0].detail}`;
-  if (has(q, ["testchip", "jtag"])) return projects[1].detail;
+  if (has(q, ["soc", "fifo"])) return projects[1].detail;
   if (has(q, ["sdf", "gls", "timing", "x-prop"])) return projects[2].detail;
   if (has(q, ["emulat", "zebu", "sva", "assert"])) return projects[3].detail;
   if (has(q, ["study", "education", "degree", "college", "nit", "kiit"]))

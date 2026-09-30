@@ -100,7 +100,7 @@ export default function Home() {
             </h2>
             <p>
               I&apos;m a Design Verification Engineer with {profile.years} years across IP- and SoC-level verification.
-              My work spans IP verification, testchip verification, JTAG-based verification and debug, timing-aware gate-level
+              My work spans IP verification, SoC verification, FIFO verification, timing-aware gate-level
               simulation, assertion-based checking, power-aware verification, coverage closure, regression
               infrastructure and debug across RTL and netlist environments.
             </p>
@@ -312,7 +312,7 @@ export default function Home() {
                 Toward <em>Staff / Principal</em>-track DV.
               </h2>
             </div>
-            <p>From strong hands-on IP and testchip verification to verification architecture, methodology ownership and cross-team technical leadership.</p>
+            <p>From strong hands-on IP and SoC verification to verification architecture, methodology ownership and cross-team technical leadership.</p>
           </div>
           <div className="roadmap stagger">
             {roadmap.map((r, i) => (
@@ -391,7 +391,7 @@ export default function Home() {
             Let&apos;s close <em>coverage</em> together.
           </h2>
           <p className="contact-lede">
-            Open to conversations on IP, SoC and testchip verification, verification architecture and AI-assisted DV.
+            Open to conversations on IP and SoC verification, verification architecture and AI-assisted DV.
           </p>
           <div className="hero-actions center">
             <a className="btn primary magnetic" href={profile.linkedin} target="_blank" rel="noreferrer">
