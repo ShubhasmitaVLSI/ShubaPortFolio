@@ -111,7 +111,7 @@ export function profileAnswer(question: string): string | undefined {
   if (has(q, ["what does", "who is", "current role", "introduce"])) parts.push(intro());
   if (has(q, ["tech stack", "tect stack", "technolog", "stack?", "skills"]) && !projects.some((p) => q.includes(p.title.toLowerCase())))
     parts.push(stackAnswer());
-  if (has(q, ["reach", "contact", "hire", "hiring", "connect", "email"])) parts.push(contact());
+  if (has(q, ["reach", "contact", "hire", "hiring", "connect", "email", "github", "linkedin"])) parts.push(contact());
   return parts.length ? parts.join("\n\n") : undefined;
 }
 
