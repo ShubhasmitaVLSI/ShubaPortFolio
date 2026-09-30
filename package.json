@@ -1,0 +1,30 @@
+{
+  "name": "shubhasmita-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test"
+  },
+  "engines": { "node": ">=22.0.0" },
+  "overrides": { "postcss": "8.5.28" },
+  "dependencies": {
+    "@ai-sdk/google": "^4.0.86",
+    "@ai-sdk/groq": "^4.0.53",
+    "@ai-sdk/react": "^4.0.126",
+    "ai": "^7.0.123",
+    "next": "^15.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^5.6.0"
+  }
+}

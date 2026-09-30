@@ -1,0 +1,487 @@
+/* =====================================================================
+   DV layer: extra themes, UVM phase tags, phase rail, page-coverage
+   meter, glossary flip cards, UVM constructs marquee.
+   Loaded after motion.css.
+   ===================================================================== */
+
+/* ---------- Themes ---------- */
+/* Orchid Assertion: plum night with orchid, peach and sky */
+[data-theme="orchid"] {
+  --bg: #120818;
+  --bg-2: #1b0d24;
+  --surface: rgba(46, 20, 58, 0.58);
+  --surface-2: rgba(60, 26, 74, 0.86);
+  --ink: #fdf4ff;
+  --muted: #d6b3df;
+  --faint: #9a76a3;
+  --line: rgba(232, 121, 249, 0.16);
+  --line-strong: rgba(232, 121, 249, 0.34);
+  --accent: #e879f9;
+  --accent-2: #fdba74;
+  --accent-3: #7dd3fc;
+  --accent-ink: #1a0620;
+  --good: #86efac;
+  --warn: #fdba74;
+  --bad: #fb7185;
+  --glow-1: rgba(217, 70, 239, 0.34);
+  --glow-2: rgba(251, 146, 60, 0.16);
+  --glow-3: rgba(56, 189, 248, 0.16);
+  --grid: rgba(232, 121, 249, 0.05);
+  --shadow: 0 30px 80px rgba(8, 0, 12, 0.55);
+  --grain: 0.16;
+  color-scheme: dark;
+}
+/* Blush Wafer: soft blush light with berry, violet and teal */
+[data-theme="blush"] {
+  --bg: #fff6f8;
+  --bg-2: #fdecf1;
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-2: rgba(255, 255, 255, 0.94);
+  --ink: #3b0a24;
+  --muted: #7a4660;
+  --faint: #a0718a;
+  --line: rgba(190, 24, 93, 0.12);
+  --line-strong: rgba(190, 24, 93, 0.26);
+  --accent: #db2777;
+  --accent-2: #7c3aed;
+  --accent-3: #0d9488;
+  --accent-ink: #ffffff;
+  --good: #0f9d6e;
+  --warn: #b45309;
+  --bad: #dc2626;
+  --glow-1: rgba(244, 114, 182, 0.26);
+  --glow-2: rgba(167, 139, 250, 0.2);
+  --glow-3: rgba(45, 212, 191, 0.14);
+  --grid: rgba(219, 39, 119, 0.06);
+  --shadow: 0 24px 60px rgba(131, 24, 67, 0.12);
+  --grain: 0.05;
+  color-scheme: light;
+}
+/* Lilac Liberty: lavender light with violet, rose and teal */
+[data-theme="lilac"] {
+  --bg: #f8f6ff;
+  --bg-2: #efeafe;
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-2: rgba(255, 255, 255, 0.94);
+  --ink: #2e1065;
+  --muted: #5b4a86;
+  --faint: #857aa8;
+  --line: rgba(109, 40, 217, 0.12);
+  --line-strong: rgba(109, 40, 217, 0.26);
+  --accent: #7c3aed;
+  --accent-2: #db2777;
+  --accent-3: #0891b2;
+  --accent-ink: #ffffff;
+  --good: #0f9d6e;
+  --warn: #b45309;
+  --bad: #dc2626;
+  --glow-1: rgba(167, 139, 250, 0.28);
+  --glow-2: rgba(244, 114, 182, 0.18);
+  --glow-3: rgba(34, 211, 238, 0.14);
+  --grid: rgba(124, 58, 237, 0.06);
+  --shadow: 0 24px 60px rgba(46, 16, 101, 0.12);
+  --grain: 0.05;
+  color-scheme: light;
+}
+
+.swatch-orchid {
+  background: linear-gradient(135deg, #120818 30%, #e879f9 30% 55%, #fdba74 55% 78%, #7dd3fc 78%);
+}
+.swatch-blush {
+  background: linear-gradient(135deg, #fff6f8 30%, #db2777 30% 55%, #7c3aed 55% 78%, #0d9488 78%);
+}
+.swatch-lilac {
+  background: linear-gradient(135deg, #f8f6ff 30%, #7c3aed 30% 55%, #db2777 55% 78%, #0891b2 78%);
+}
+
+/* Light themes: softer shadows on floating panels */
+[data-theme="blush"] .ent,
+[data-theme="lilac"] .ent,
+[data-theme="wafer"] .ent {
+  box-shadow: 0 12px 30px rgba(40, 10, 60, 0.08);
+}
+
+/* Theme menu with groups and corner tags */
+.palette-menu {
+  width: 300px;
+  max-height: calc(100vh - var(--nav) - 24px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.palette-sub {
+  margin: 10px 8px 4px;
+  font: 10.5px var(--mono);
+  color: var(--faint);
+}
+.palette-text {
+  flex: 1;
+  min-width: 0;
+}
+.palette-corner {
+  flex: none;
+  font: 9.5px var(--mono);
+  color: var(--faint);
+  white-space: nowrap;
+}
+.palette-item.on .palette-corner {
+  color: var(--accent);
+}
+
+/* ---------- UVM phase tag on section labels ---------- */
+.phase-tag {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font: 500 10.5px var(--mono);
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--accent-2);
+  background: color-mix(in srgb, var(--accent-2) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-2) 30%, transparent);
+}
+.phase-tag::after {
+  content: "()";
+  opacity: 0.6;
+}
+.contact .kicker {
+  flex-wrap: wrap;
+}
+
+/* ---------- Second marquee: UVM constructs, reverse ---------- */
+.marquee + .marquee {
+  border-top: 0;
+}
+.marquee.reverse {
+  padding: 14px 0;
+}
+.marquee.reverse .marquee-track {
+  animation-direction: reverse;
+  animation-duration: 56s;
+}
+.marquee.reverse span {
+  font: 14px var(--mono);
+  color: var(--faint);
+}
+.marquee.reverse b {
+  color: var(--accent-2);
+}
+
+/* ---------- Phase rail (desktop) ---------- */
+.phase-rail {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  z-index: 90;
+  display: none;
+  flex-direction: column;
+  gap: 13px;
+  transform: translateY(-50%);
+}
+.phase-rail-line {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.phase-rail-line i {
+  position: absolute;
+  inset: 0;
+  transform-origin: top;
+  background: linear-gradient(var(--accent), var(--accent-2));
+  transition: transform 0.6s var(--ease);
+}
+.phase-dot {
+  position: relative;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  background: var(--bg);
+  transition: transform 0.3s var(--ease), background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.phase-dot.done {
+  background: color-mix(in srgb, var(--accent) 60%, var(--bg));
+  border-color: var(--accent);
+}
+.phase-dot.on {
+  transform: scale(1.45);
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent), 0 0 16px var(--accent);
+}
+.phase-tip {
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 6px 10px;
+  border-radius: 10px;
+  white-space: nowrap;
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(8px, -50%);
+  transition: opacity 0.25s, transform 0.3s var(--ease);
+}
+.phase-dot.on .phase-tip {
+  transform: translate(8px, -50%) scale(0.69);
+}
+.phase-dot:hover .phase-tip,
+.phase-dot:focus-visible .phase-tip {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+.phase-dot.on:hover .phase-tip,
+.phase-dot.on:focus-visible .phase-tip {
+  transform: translate(0, -50%) scale(0.69);
+}
+.phase-tip code {
+  font: 12px var(--mono);
+  color: var(--accent);
+}
+.phase-tip small {
+  font-size: 11px;
+  color: var(--muted);
+}
+@media (min-width: 1180px) {
+  .phase-rail {
+    display: flex;
+  }
+}
+
+/* ---------- Page coverage meter ---------- */
+.cov {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 130;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+.cov svg {
+  width: 40px;
+  height: 40px;
+  transform: rotate(-90deg);
+}
+.cov-track {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 3.5;
+}
+.cov-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.25s linear, stroke 0.4s;
+}
+.cov-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+.cov-text small {
+  font: 10px var(--mono);
+  color: var(--faint);
+}
+.cov-text b {
+  font: 600 14px var(--mono);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.cov-phase {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font: 10.5px var(--mono);
+  color: var(--accent-2);
+  background: color-mix(in srgb, var(--accent-2) 12%, transparent);
+  animation: rise 0.4s var(--ease);
+}
+.cov.closed {
+  border-color: var(--good, #4ade80);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--good, #4ade80) 16%, transparent), var(--shadow);
+}
+.cov.closed .cov-fill {
+  stroke: var(--good, #4ade80);
+}
+.cov.closed .cov-text b {
+  color: var(--good, #4ade80);
+}
+.cov-burst {
+  position: absolute;
+  left: 26px;
+  top: 26px;
+  width: 0;
+  height: 0;
+}
+.bit {
+  position: absolute;
+  font: 600 12px var(--mono);
+  color: var(--accent);
+  animation: bitFly 1.2s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+}
+.bit:nth-child(3n) {
+  color: var(--accent-2);
+}
+.bit:nth-child(3n + 1) {
+  color: var(--good, #4ade80);
+}
+@keyframes bitFly {
+  from {
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 1;
+  }
+  to {
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.1) rotate(200deg);
+    opacity: 0;
+  }
+}
+@media (max-width: 760px) {
+  .cov {
+    left: 16px;
+    bottom: 16px;
+    padding-right: 10px;
+  }
+  .cov-phase {
+    display: none;
+  }
+}
+
+/* ---------- Glossary flip cards ---------- */
+.gloss {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.flip {
+  height: 236px;
+  perspective: 1100px;
+  text-align: left;
+}
+.flip-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.75s var(--ease);
+}
+@media (hover: hover) {
+  .flip:hover .flip-inner {
+    transform: rotateY(10deg);
+  }
+  .flip.flipped:hover .flip-inner {
+    transform: rotateY(170deg);
+  }
+}
+.flip.flipped .flip-inner {
+  transform: rotateY(180deg);
+}
+.flip-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.flip-face.back {
+  transform: rotateY(180deg);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 16%, var(--surface-2)), var(--surface-2));
+  border-color: var(--accent);
+}
+.flip-kind {
+  font: 500 11px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-3);
+}
+.flip-face.front strong {
+  margin-top: auto;
+  font: 700 clamp(30px, 3vw, 40px) / 1 var(--display);
+  letter-spacing: -0.03em;
+  background: linear-gradient(100deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.flip-face.front small {
+  font-size: 13px;
+  color: var(--muted);
+}
+.flip-hint {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font: 11px var(--mono);
+  color: var(--faint);
+  transition: color 0.2s;
+}
+.flip:hover .flip-hint {
+  color: var(--accent);
+}
+.flip-def {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.flip-use {
+  margin-top: auto;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.flip-use b {
+  color: var(--accent);
+  font-weight: 600;
+}
+@media (max-width: 1080px) {
+  .gloss {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .gloss {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .flip {
+    height: 250px;
+  }
+  .flip-face {
+    padding: 16px;
+  }
+  .flip-def {
+    font-size: 13px;
+  }
+}
+@media (max-width: 440px) {
+  .gloss {
+    grid-template-columns: 1fr;
+  }
+  .flip {
+    height: 210px;
+  }
+}
