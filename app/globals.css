@@ -234,30 +234,33 @@ em {
   pointer-events: none;
   overflow: hidden;
 }
+/* Soft glows drawn as radial gradients. A blur() filter on these full-screen
+   layers had to be redrawn on every animation frame and halved the frame rate. */
 .aurora span {
   position: absolute;
   width: 48vw;
   height: 48vw;
   border-radius: 50%;
-  filter: blur(80px);
+  background: radial-gradient(closest-side, var(--glow), transparent);
   opacity: 0.55;
+  will-change: transform;
   animation: drift 22s ease-in-out infinite alternate;
 }
 .aurora span:nth-child(1) {
   top: -14vw;
   left: -10vw;
-  background: var(--glow-1);
+  --glow: var(--glow-1);
 }
 .aurora span:nth-child(2) {
   top: 30vh;
   right: -16vw;
-  background: var(--glow-2);
+  --glow: var(--glow-2);
   animation-duration: 28s;
 }
 .aurora span:nth-child(3) {
   bottom: -18vw;
   left: 24vw;
-  background: var(--glow-3);
+  --glow: var(--glow-3);
   animation-duration: 34s;
 }
 @keyframes drift {

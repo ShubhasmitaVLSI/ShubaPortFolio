@@ -13,13 +13,13 @@ export default function Boot() {
   useEffect(() => {
     const root = document.documentElement;
     if (root.classList.contains("no-boot")) return setGone(true);
-    const t1 = window.setTimeout(() => setLeaving(true), 1650);
+    const t1 = window.setTimeout(() => setLeaving(true), 900);
     const t2 = window.setTimeout(() => {
       setGone(true);
       try {
         sessionStorage.setItem("dv-booted", "1");
       } catch {}
-    }, 2300);
+    }, 1350);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -35,7 +35,7 @@ export default function Boot() {
         <p className="boot-title">Elaborating testbench…</p>
         <ul>
           {phases.map((p, i) => (
-            <li key={p} style={{ animationDelay: `${0.15 + i * 0.24}s` }}>
+            <li key={p} style={{ animationDelay: `${0.08 + i * 0.13}s` }}>
               <span>{p}</span>
               <b>✓</b>
             </li>

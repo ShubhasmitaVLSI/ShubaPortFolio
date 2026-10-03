@@ -16,7 +16,7 @@
 
 /* Hero entrance waits for the boot sequence on a first visit */
 html.js:not(.no-boot) .hero {
-  --boot: 1.9s;
+  --boot: 1s;
 }
 .hero .reveal {
   animation-delay: var(--boot, 0s);
@@ -44,7 +44,7 @@ html.js:not(.no-boot) .boot {
   display: grid;
 }
 .boot.leaving {
-  animation: bootOut 0.65s var(--ease) forwards;
+  animation: bootOut 0.45s var(--ease) forwards;
 }
 @keyframes bootOut {
   to {
@@ -85,7 +85,7 @@ html.js:not(.no-boot) .boot {
   justify-content: space-between;
   color: var(--ink);
   opacity: 0;
-  animation: fadeLine 0.35s var(--ease) forwards;
+  animation: fadeLine 0.25s var(--ease) forwards;
 }
 .boot li b {
   color: var(--good, #4ade80);
@@ -103,7 +103,7 @@ html.js:not(.no-boot) .boot {
   transform-origin: left;
   transform: scaleX(0);
   background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
-  animation: fill 1.5s var(--ease) forwards;
+  animation: fill 0.85s var(--ease) forwards;
 }
 
 /* ---------- Netlist canvas behind the hero ---------- */

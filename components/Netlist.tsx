@@ -27,6 +27,10 @@ export default function Netlist() {
     const mouse = { x: -9999, y: -9999 };
     let colors = { a: "#818cf8", b: "#22d3ee", line: "rgba(148,163,184,.2)" };
     const LINK = 130;
+    const LEVELS = 6;
+    // Reused each frame: line endpoints per opacity level, for nets and cursor probes.
+    const nets: number[][] = Array.from({ length: LEVELS }, () => []);
+    const probes: number[][] = Array.from({ length: LEVELS }, () => []);
 
     const readColors = () => {
       const cs = getComputedStyle(document.documentElement);
@@ -72,43 +76,58 @@ export default function Netlist() {
           }
         }
       }
-      // Nets
-      ctx.lineWidth = 1;
+      // Nets. Lines are grouped into a few opacity levels and each group is stroked
+      // once, instead of one stroke per line (thousands per frame).
+      for (const p of nets) p.length = 0;
+      for (const p of probes) p.length = 0;
       for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
         for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i],
-            b = nodes[j];
-          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          const b = nodes[j];
+          const dx = Math.abs(a.x - b.x);
+          if (dx >= LINK) continue;
+          const d = Math.hypot(dx, a.y - b.y);
           if (d < LINK) {
-            ctx.globalAlpha = (1 - d / LINK) * 0.55;
-            ctx.strokeStyle = colors.line;
-            // Manhattan-routed like a real net
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
+            nets[Math.min(LEVELS - 1, Math.floor((1 - d / LINK) * LEVELS))].push(a.x, a.y, b.x, b.y);
             if (!reduce && packets.length < 14 && Math.random() < 0.0009) {
               packets.push({ a: i, b: j, t: 0, speed: 0.012 + Math.random() * 0.02 });
             }
           }
         }
-        const md = Math.hypot(nodes[i].x - mouse.x, nodes[i].y - mouse.y);
-        if (md < 170) {
-          ctx.globalAlpha = (1 - md / 170) * 0.9;
-          ctx.strokeStyle = colors.a;
-          ctx.beginPath();
-          ctx.moveTo(nodes[i].x, nodes[i].y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.stroke();
-        }
+        const md = Math.hypot(a.x - mouse.x, a.y - mouse.y);
+        if (md < 170) probes[Math.min(LEVELS - 1, Math.floor((1 - md / 170) * LEVELS))].push(a.x, a.y);
       }
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = colors.line;
+      nets.forEach((segs, level) => {
+        if (!segs.length) return;
+        ctx.globalAlpha = ((level + 1) / LEVELS) * 0.55;
+        ctx.beginPath();
+        // Manhattan-routed like a real net
+        for (let k = 0; k < segs.length; k += 4) {
+          ctx.moveTo(segs[k], segs[k + 1]);
+          ctx.lineTo(segs[k + 2], segs[k + 1]);
+          ctx.lineTo(segs[k + 2], segs[k + 3]);
+        }
+        ctx.stroke();
+      });
+      ctx.strokeStyle = colors.a;
+      probes.forEach((pts, level) => {
+        if (!pts.length) return;
+        ctx.globalAlpha = ((level + 1) / LEVELS) * 0.9;
+        ctx.beginPath();
+        for (let k = 0; k < pts.length; k += 2) {
+          ctx.moveTo(pts[k], pts[k + 1]);
+          ctx.lineTo(mouse.x, mouse.y);
+        }
+        ctx.stroke();
+      });
       // Cells
       ctx.globalAlpha = 0.85;
-      for (const n of nodes) {
-        ctx.fillStyle = colors.a;
-        ctx.fillRect(n.x - n.r, n.y - n.r, n.r * 2, n.r * 2);
-      }
+      ctx.fillStyle = colors.a;
+      ctx.beginPath();
+      for (const n of nodes) ctx.rect(n.x - n.r, n.y - n.r, n.r * 2, n.r * 2);
+      ctx.fill();
       // Packets travel along the L-shaped route
       for (let k = packets.length - 1; k >= 0; k--) {
         const p = packets[k];
@@ -125,14 +144,16 @@ export default function Netlist() {
         const s = p.t * tot;
         const x = s < lx ? a.x + Math.sign(b.x - a.x) * s : b.x;
         const y = s < lx ? a.y : a.y + Math.sign(b.y - a.y) * (s - lx);
-        ctx.globalAlpha = 1;
+        // A faint halo instead of shadowBlur, which is slow to draw.
         ctx.fillStyle = colors.b;
-        ctx.shadowColor = colors.b;
-        ctx.shadowBlur = 12;
+        ctx.globalAlpha = 0.25;
+        ctx.beginPath();
+        ctx.arc(x, y, 7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
         ctx.beginPath();
         ctx.arc(x, y, 2.6, 0, Math.PI * 2);
         ctx.fill();
-        ctx.shadowBlur = 0;
       }
       ctx.globalAlpha = 1;
       if (visible && !reduce) raf = requestAnimationFrame(frame);
