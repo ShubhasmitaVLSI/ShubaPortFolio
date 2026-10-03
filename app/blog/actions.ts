@@ -14,7 +14,7 @@ import {
   startSession,
 } from "@/lib/auth";
 import { normalizeTags, validatePost, type PostField, type PostInput } from "@/lib/blog";
-import { BlogError, deletePost, savePost } from "@/lib/blog-store";
+import { BlogError, deletePost, getPost, savePost } from "@/lib/blog-store";
 
 export type LoginState = { error?: string };
 export type SaveState = { error?: string; fields?: Partial<Record<PostField, string>> };
@@ -72,10 +72,52 @@ export async function savePostAction(_: SaveState, form: FormData): Promise<Save
   redirect(`/blog/${slug}?saved=${input.status}`);
 }
 
+// Where list actions return to: the dashboard or the blog index, nothing else.
+const backTo = (form: FormData) => (form.get("next") === "/blog/manage" ? "/blog/manage" : "/blog");
+
+/** Runs a storage write; storage problems come back as a short code for the page to explain. */
+async function attempt(op: () => Promise<unknown>) {
+  try {
+    await op();
+    return "";
+  } catch (e) {
+    console.error("blog update failed", e instanceof Error ? e.message : e);
+    return e instanceof BlogError && /read-only/.test(e.message) ? "readonly" : "failed";
+  }
+}
+
 export async function deletePostAction(form: FormData) {
   if (!(await currentAdmin())) redirect("/blog/login");
-  const slug = String(form.get("slug") ?? "");
-  await deletePost(slug);
+  const next = backTo(form);
+  const error = await attempt(() => deletePost(String(form.get("slug") ?? "")));
   revalidatePath("/blog", "layout");
-  redirect("/blog?deleted=1");
+  redirect(error ? `${next}?error=${error}` : `${next}?deleted=1`);
+}
+
+/** Publish or unpublish straight from the post list, keeping everything else. */
+export async function setStatusAction(form: FormData) {
+  if (!(await currentAdmin())) redirect("/blog/login");
+  const post = await getPost(String(form.get("slug") ?? ""));
+  if (!post) redirect("/blog/manage?error=missing");
+  const status = form.get("status") === "published" ? "published" : "draft";
+  // Publishing keeps a future schedule; otherwise the date is stamped (or kept) by savePost.
+  const future = post.publishedAt && Date.parse(post.publishedAt) > Date.now() ? post.publishedAt : "";
+  const error = await attempt(() =>
+    savePost(
+      {
+        slug: post.slug,
+        title: post.title,
+        description: post.description,
+        content: post.content,
+        tags: post.tags,
+        cover: post.cover,
+        featured: post.featured,
+        status,
+        publishAt: status === "published" ? future : "",
+      },
+      post.slug
+    )
+  );
+  revalidatePath("/blog", "layout");
+  redirect(error ? `/blog/manage?error=${error}` : `/blog/manage?done=${status}&post=${post.slug}`);
 }

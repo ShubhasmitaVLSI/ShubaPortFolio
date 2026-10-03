@@ -144,3 +144,50 @@ test("author tools: image paste, scheduling, highlighting, waveforms and sitemap
   await page.getByRole("button", { name: "Delete" }).click();
   await expect(page.locator(".blog-flash")).toHaveText("Post deleted.");
 });
+
+test("author dashboard lists posts by status with edit, publish and delete", async ({ page }, testInfo) => {
+  test.skip(!email || !password, "Set BLOG_TEST_EMAIL and BLOG_TEST_PASSWORD to run the author flow.");
+  expect((await page.goto("/blog/manage"))?.url()).toMatch(/\/blog\/login\?next=\/blog\/manage$/);
+  await page.getByLabel("Email").fill(email!);
+  await page.getByLabel("Password", { exact: true }).fill(password!);
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await expect(page).toHaveURL(/\/blog\/manage$/);
+
+  // Create a draft from the dashboard's "New post" button.
+  const title = `Dashboard draft ${testInfo.project.name} ${Date.now()}`;
+  await page.getByRole("link", { name: "+ New post" }).first().click();
+  await page.getByLabel("Title", { exact: true }).fill(title);
+  await page.getByLabel(/^Description/).fill("Created to test the dashboard.");
+  await page.getByLabel("Post content (Markdown)").fill("Body.");
+  await page.getByRole("button", { name: "Save draft" }).click();
+  await expect(page.getByText("Draft · only you can see this")).toBeVisible();
+
+  await page.goto("/blog/manage");
+  const tab = (name: string) => page.getByRole("tab", { name: new RegExp(`^${name}`) });
+  const row = page.locator(".manage-row", { hasText: title });
+  await tab("Drafts").click();
+  await expect(row).toBeVisible();
+  await tab("Published").click();
+  await expect(row).toHaveCount(0);
+
+  // Publish from the list, then find it under Published.
+  await tab("All").click();
+  await row.getByRole("button", { name: `Publish ${title}` }).click();
+  await expect(page.locator(".blog-flash")).toHaveText("Post published.");
+  await tab("Published").click();
+  await expect(row.locator(".badge").first()).toHaveText("Published");
+
+  // Edit opens the editor for that post.
+  await row.getByRole("link", { name: `Edit ${title}` }).click();
+  await expect(page.getByLabel("Title", { exact: true })).toHaveValue(title);
+  await page.goto("/blog/manage");
+
+  // Unpublish, then delete, both returning to the dashboard.
+  await row.getByRole("button", { name: `Unpublish ${title}` }).click();
+  await expect(page.locator(".blog-flash")).toHaveText("Post moved to drafts.");
+  page.once("dialog", (d) => d.accept());
+  await row.getByRole("button", { name: `Delete ${title}` }).click();
+  await expect(page).toHaveURL(/\/blog\/manage\?deleted=1$/);
+  await expect(page.locator(".blog-flash")).toHaveText("Post deleted.");
+  await expect(row).toHaveCount(0);
+});

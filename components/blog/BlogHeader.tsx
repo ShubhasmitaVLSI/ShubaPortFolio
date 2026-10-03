@@ -10,10 +10,13 @@ export default async function BlogHeader() {
         <span className="brand-name">Shubhasmita</span>
       </a>
       <nav className="nav-links show blog-nav" aria-label="Primary">
-        <a href="/">Home</a>
+        <a className="nav-home" href="/">
+          Home
+        </a>
         <a href="/blog">Blog</a>
         {admin ? (
           <>
+            <a href="/blog/manage">Manage</a>
             <form action={logout}>
               <button type="submit" className="blog-nav-btn">
                 Sign out

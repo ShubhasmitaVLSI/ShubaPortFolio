@@ -81,7 +81,7 @@ export default async function PostPage({ params, searchParams }: { params: Param
       <main className="post" id="top">
         {admin && (
           <div className="admin-bar" role="region" aria-label="Author tools">
-            <span className={`badge ${isLive(post) ? "live" : "draft"}`}>
+            <span className={`badge ${isLive(post) ? "ok" : "draft"}`}>
               {post.status === "draft"
                 ? "Draft · only you can see this"
                 : isScheduled(post)
@@ -94,6 +94,9 @@ export default async function PostPage({ params, searchParams }: { params: Param
               </span>
             )}
             <span className="admin-actions">
+              <a className="btn ghost sm" href="/blog/manage">
+                All posts
+              </a>
               <a className="btn ghost sm" href={`/blog/${post.slug}/edit`}>
                 Edit
               </a>

@@ -25,7 +25,7 @@ export type PostField = keyof PostInput;
 export const LIMITS = { title: 140, description: 300, content: 100_000, tags: 8, tag: 32, slug: 80 };
 
 // Static routes under /blog that a post slug must not shadow.
-export const RESERVED_SLUGS = new Set(["new", "login", "rss", "edit", "media"]);
+export const RESERVED_SLUGS = new Set(["new", "login", "rss", "edit", "media", "manage"]);
 
 export function slugify(text: string) {
   return text

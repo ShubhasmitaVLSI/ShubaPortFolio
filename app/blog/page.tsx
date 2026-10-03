@@ -52,9 +52,14 @@ export default async function BlogIndex({ searchParams }: { searchParams: Search
             </span>
             <a href="/blog/rss.xml">RSS feed</a>
             {admin && (
-              <a className="btn primary" href="/blog/new">
-                Write a post <span aria-hidden="true">→</span>
-              </a>
+              <>
+                <a className="btn primary" href="/blog/new">
+                  Write a post <span aria-hidden="true">→</span>
+                </a>
+                <a className="btn ghost" href="/blog/manage">
+                  Manage posts
+                </a>
+              </>
             )}
           </div>
         </section>
