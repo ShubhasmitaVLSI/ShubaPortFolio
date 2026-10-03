@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import LoginForm from "@/components/blog/LoginForm";
-import { authConfigured, currentAdmin } from "@/lib/auth";
+import { authProblems, currentAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Author sign in", robots: { index: false } };
@@ -9,6 +9,10 @@ export const metadata: Metadata = { title: "Author sign in", robots: { index: fa
 export default async function Login({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
   if (await currentAdmin()) redirect("/blog");
   const { next } = await searchParams;
+  const problems = authProblems();
+  // Visitors never see setup details; the cause goes to the server log (Vercel → Logs).
+  if (problems.length) console.warn(`Blog sign-in disabled: ${problems.join("; ")}`);
+  const local = process.env.NODE_ENV !== "production";
   return (
     <main className="auth">
       <div className="auth-card spot reveal">
@@ -17,15 +21,17 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
         </span>
         <h1>Author sign in</h1>
         <p className="auth-sub">Sign in to write, edit and publish posts.</p>
-        {authConfigured() ? (
+        {!problems.length ? (
           <LoginForm next={next ?? "/blog"} />
-        ) : (
+        ) : local ? (
           <div className="auth-setup">
-            <p>Sign-in isn&apos;t configured yet. Add these to <code>.env.local</code> (or the hosting environment) and restart:</p>
-            <pre>{`BLOG_ADMIN_EMAIL=you@example.com
-BLOG_ADMIN_PASSWORD=a-long-passphrase
-BLOG_AUTH_SECRET=<32+ random characters>`}</pre>
+            <p>Sign-in isn&apos;t configured on this machine: {problems.join("; ")}.</p>
+            <p>
+              Add them to <code>.env.local</code> and restart the dev server.
+            </p>
           </div>
+        ) : (
+          <p className="auth-setup">Author sign-in is unavailable right now.</p>
         )}
         <a className="back-link" href="/blog">
           ← Back to the blog

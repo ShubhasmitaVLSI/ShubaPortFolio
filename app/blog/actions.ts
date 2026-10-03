@@ -24,7 +24,7 @@ const safeNext = (v: FormDataEntryValue | null) =>
   typeof v === "string" && /^\/blog(\/[\w-]*)*\/?$/.test(v) ? v : "/blog";
 
 export async function login(_: LoginState, form: FormData): Promise<LoginState> {
-  if (!authConfigured()) return { error: "Sign-in isn't configured on this server yet." };
+  if (!authConfigured()) return { error: "Author sign-in is unavailable right now." };
   const ip = (await headers()).get("x-forwarded-for")?.split(",")[0].trim() || "local";
   if (loginBlocked(ip)) return { error: "Too many attempts. Wait 15 minutes and try again." };
   if (!checkCredentials(String(form.get("email") ?? ""), String(form.get("password") ?? ""))) {

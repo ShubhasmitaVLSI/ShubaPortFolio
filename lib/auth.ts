@@ -14,10 +14,19 @@ const env = () => ({
   secret: process.env.BLOG_AUTH_SECRET ?? "",
 });
 
-export function authConfigured() {
+/** Names of missing or invalid settings (never their values), for server logs and local hints. */
+export function authProblems() {
   const { email, password, secret } = env();
-  return Boolean(email && password.length >= 8 && secret.length >= 32);
+  const problems: string[] = [];
+  if (!email) problems.push("BLOG_ADMIN_EMAIL is missing");
+  if (!password) problems.push("BLOG_ADMIN_PASSWORD is missing");
+  else if (password.length < 8) problems.push("BLOG_ADMIN_PASSWORD is shorter than 8 characters");
+  if (!secret) problems.push("BLOG_AUTH_SECRET is missing");
+  else if (secret.length < 32) problems.push("BLOG_AUTH_SECRET is shorter than 32 characters");
+  return problems;
 }
+
+export const authConfigured = () => authProblems().length === 0;
 
 // Hashing first gives equal-length buffers, so the comparison leaks no length.
 const sameText = (a: string, b: string) =>
