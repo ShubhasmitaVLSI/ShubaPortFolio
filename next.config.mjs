@@ -9,6 +9,9 @@ const nextConfig = {
       { key: "X-Frame-Options", value: "SAMEORIGIN" },
     ] }];
   },
+  // Ship committed posts with the serverless functions that read them.
+  // Every route that lists posts (blog pages, RSS, sitemap, uploads) needs them.
+  outputFileTracingIncludes: { "/**": ["./content/blog/**/*"] },
   // Lets a production check build alongside a running `next dev`.
   distDir: process.env.NEXT_DIST_DIR || ".next",
 };

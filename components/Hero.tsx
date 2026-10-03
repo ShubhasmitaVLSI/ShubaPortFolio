@@ -90,8 +90,8 @@ export default function Hero() {
           <a className="btn ghost magnetic" href={profile.linkedin} target="_blank" rel="noreferrer">
             LinkedIn
           </a>
-          <a className="btn ghost magnetic" href={profile.github} target="_blank" rel="noreferrer">
-            GitHub
+          <a className="btn ghost magnetic" href={profile.booking}>
+            Book a call
           </a>
         </div>
         <div className="meta-row reveal d3">

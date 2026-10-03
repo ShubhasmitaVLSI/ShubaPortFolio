@@ -169,6 +169,13 @@ test("ER dragging updates position and reset restores it", async ({ page }, test
   await header.click({ trial: true });
   await header.evaluate(el => el.scrollIntoView({ block: "center", behavior: "instant" }));
   const initial = await entity.evaluate(el => (el as HTMLElement).style.left);
+  // Entities fade in with staggered entrance animations; a drag started mid-animation lands as a click.
+  await page.waitForFunction(() =>
+    document
+      .querySelector(".er")!
+      .getAnimations({ subtree: true })
+      .every((a) => a.effect?.getTiming().iterations === Infinity || a.playState === "finished")
+  );
   const rect = await header.boundingBox();
   if (!rect) throw new Error("Entity header has no bounds");
   await page.mouse.move(rect.x + rect.width / 2, rect.y + rect.height / 2);

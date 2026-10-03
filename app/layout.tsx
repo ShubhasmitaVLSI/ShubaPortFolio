@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import "./motion.css";
 import "./dv.css";
+import "./booking.css";
 import { profile } from "@/lib/data";
 import { glossary, seoKeywords } from "@/lib/dv";
 
@@ -40,7 +41,7 @@ const personLd = {
   address: { "@type": "PostalAddress", addressLocality: "Bengaluru", addressCountry: "IN" },
   alumniOf: ["National Institute of Technology Rourkela", "Kalinga Institute of Industrial Technology"],
   knowsAbout: [...glossary.map((g) => g.full), ...seoKeywords.slice(0, 20)],
-  sameAs: [profile.linkedin, profile.github],
+  sameAs: [profile.linkedin],
 };
 
 // Applied before paint so the saved theme never flashes.

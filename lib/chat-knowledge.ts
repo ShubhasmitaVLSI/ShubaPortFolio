@@ -11,6 +11,7 @@ import {
   roadmap,
   stack,
 } from "./data";
+import { availabilityLabel } from "./booking";
 
 const first = profile.first;
 
@@ -22,7 +23,8 @@ export function buildKnowledge() {
     `Role: ${profile.role} (${profile.title}) at ${profile.company}`,
     `Location: ${profile.location}`,
     `Experience: ${profile.years} years in design verification`,
-    `LinkedIn: ${profile.linkedin} · GitHub: ${profile.github}`,
+    `LinkedIn: ${profile.linkedin}`,
+    `Book a call: ${availabilityLabel}. Visitors book from the "Book" tab in this chat or the Book a call page (/book); they get a Google Calendar invitation with the Meet link.`,
     `Summary: ${profile.tagline}`,
     "",
     "# Highlights",
@@ -90,6 +92,7 @@ Rules:
 - Answer only from the KNOWLEDGE below. If something is not covered, say you don't have that detail and suggest reaching out on LinkedIn: ${profile.linkedin}
 - Refer to ${first} in the third person (she/her). Be warm, direct and concise: 2–5 sentences or a short "- " bullet list.
 - Plain text only. No headings, tables or markdown links; write URLs out in full.
+- If the visitor wants to talk, meet, interview or schedule time with ${first}, tell them to use the "Book" tab in this chat (${availabilityLabel}).
 - Never invent numbers, employers, dates, customers, process nodes or confidential program details.${where}
 
 KNOWLEDGE:
@@ -101,7 +104,14 @@ const has = (q: string, words: string[]) => words.some((w) => q.includes(w));
 const intro = () =>
   `${first} is a ${profile.role} (${profile.title}) at ${profile.company}, ${profile.location}, with ${profile.years} years in design verification. ${profile.tagline}`;
 const stackAnswer = () => `Core stack: ${marquee.join(", ")}.`;
-const contact = () => `The best way to reach ${first} is LinkedIn: ${profile.linkedin} (GitHub: ${profile.github}).`;
+const contact = () =>
+  `The quickest way to talk with ${first} is to book a 30-minute Google Meet (daily, 6:30–10:00 PM IST) from the "Book" tab here. You can also reach her on LinkedIn: ${profile.linkedin}`;
+const booking = () =>
+  `You can book a 30-minute Google Meet with ${first} any day between 6:30 PM and 10:00 PM IST. Pick a time in the "Book" tab, add your name and email, and you'll get a calendar invitation with the Meet link straight away.`;
+
+/** True when a visitor is asking to talk, meet or schedule time. */
+export const wantsBooking = (question: string) =>
+  /\b(book|schedul|meeting|meet|call|appointment|calendar|slots?|availab|interview|let'?s talk|talk to)/i.test(question);
 
 // Direct answers for the most common questions, answered before any model call.
 export function profileAnswer(question: string): string | undefined {
@@ -111,7 +121,8 @@ export function profileAnswer(question: string): string | undefined {
   if (has(q, ["what does", "who is", "current role", "introduce"])) parts.push(intro());
   if (has(q, ["tech stack", "tect stack", "technolog", "stack?", "skills"]) && !projects.some((p) => q.includes(p.title.toLowerCase())))
     parts.push(stackAnswer());
-  if (has(q, ["reach", "contact", "hire", "hiring", "connect", "email", "github", "linkedin"])) parts.push(contact());
+  if (wantsBooking(q)) parts.push(booking());
+  else if (has(q, ["reach", "contact", "hire", "hiring", "connect", "email", "github", "linkedin"])) parts.push(contact());
   return parts.length ? parts.join("\n\n") : undefined;
 }
 

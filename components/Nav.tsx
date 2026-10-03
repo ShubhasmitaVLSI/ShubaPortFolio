@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { profile } from "@/lib/data";
 
 const links = [
   { href: "#atlas", label: "Atlas" },
@@ -9,6 +10,7 @@ const links = [
   { href: "#experience", label: "Experience" },
   { href: "#stack", label: "Skills" },
   { href: "#roadmap", label: "Roadmap" },
+  { href: "/blog", label: "Blog" },
 ];
 
 // Each theme is named like a DV artefact and tagged with a playful PVT corner.
@@ -38,7 +40,7 @@ export default function Nav() {
 
   // Highlight the section in view
   useEffect(() => {
-    const ids = links.map((l) => l.href.slice(1)).concat("contact");
+    const ids = links.filter((l) => l.href.startsWith("#")).map((l) => l.href.slice(1)).concat("contact");
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) if (e.isIntersecting) setActive(e.target.id);
@@ -115,7 +117,7 @@ export default function Nav() {
             {l.label}
           </a>
         ))}
-        <a className="nav-cta" href="#contact" onClick={() => setOpen(false)}>
+        <a className="nav-cta" href={profile.booking} onClick={() => setOpen(false)}>
           Let&apos;s talk
         </a>
       </nav>

@@ -20,7 +20,8 @@ export default function Projects() {
         </a>
         <nav className="nav-links show" aria-label="Primary">
           <a href="/">← Home</a>
-          <a className="nav-cta" href="/#contact">
+          <a href="/blog">Blog</a>
+          <a className="nav-cta" href={profile.booking}>
             Let&apos;s talk
           </a>
         </nav>

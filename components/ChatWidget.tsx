@@ -5,7 +5,9 @@ import { DefaultChatTransport, type UIMessage } from "ai";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { profile } from "@/lib/data";
-import { guideActions, sectionContexts, suggestedQuestions } from "@/lib/chat-knowledge";
+import { guideActions, sectionContexts, suggestedQuestions, wantsBooking } from "@/lib/chat-knowledge";
+import { availabilityLabel } from "@/lib/booking";
+import BookingFlow from "@/components/BookingFlow";
 
 const first = profile.first;
 const STORE = "sh-chat-v1";
@@ -81,7 +83,7 @@ function linkify(text: string) {
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
-  const [view, setView] = useState<"guide" | "chat">("guide");
+  const [view, setView] = useState<"guide" | "chat" | "book">("guide");
   const [teaser, setTeaser] = useState(false);
   const [input, setInput] = useState("");
   const [greet, setGreet] = useState(hello);
@@ -101,6 +103,8 @@ export function ChatWidget() {
   const chips = [...new Set([...context.questions, ...suggestedQuestions])].slice(0, 4);
   const { messages, sendMessage, status, error, clearError, setMessages } = useChat({ messages: initial, transport });
   const busy = status === "submitted" || status === "streaming";
+  const lastUser = [...messages].reverse().find((m) => m.role === "user");
+  const offerBooking = Boolean(lastUser && wantsBooking(textOf(lastUser)));
 
   const shown = messages.map((m) => ({ role: m.role === "user" ? "user" : "assistant", content: textOf(m) }));
   if (status === "submitted" || (busy && shown.at(-1)?.role === "user")) shown.push({ role: "assistant", content: "" });
@@ -203,8 +207,11 @@ export function ChatWidget() {
             <button aria-pressed={view === "guide"} onClick={() => setView("guide")}>
               ◇ Guide
             </button>
-            <button aria-pressed={view === "chat"} onClick={() => setView("chat")}>
-              ◌ Ask about {first}
+            <button aria-pressed={view === "chat"} aria-label={`Ask about ${first}`} onClick={() => setView("chat")}>
+              ◌ Ask
+            </button>
+            <button aria-pressed={view === "book"} onClick={() => setView("book")}>
+              📅 Book
             </button>
           </nav>
           {view === "guide" ? (
@@ -220,6 +227,13 @@ export function ChatWidget() {
                   </button>
                 ))}
               </div>
+              <button className="chat-action featured" onClick={() => setView("book")}>
+                <span>
+                  <strong>📅 Book a 30-min call</strong>
+                  <small>{availabilityLabel}</small>
+                </span>
+                <span aria-hidden="true">→</span>
+              </button>
               <p className="chat-sub">Or choose a starting point</p>
               {guideActions.map((a) => (
                 <button key={a.label} className="chat-action" disabled={busy} onClick={() => ask(a.question)}>
@@ -237,6 +251,10 @@ export function ChatWidget() {
                 </span>
                 <span aria-hidden="true">↗</span>
               </a>
+            </div>
+          ) : view === "book" ? (
+            <div className="chat-book">
+              <BookingFlow compact />
             </div>
           ) : (
             <>
@@ -256,6 +274,16 @@ export function ChatWidget() {
                   </p>
                 ))}
               </div>
+              {offerBooking && !busy && (
+                <button className="chat-book-cta" onClick={() => setView("book")}>
+                  <span aria-hidden="true">📅</span>
+                  <span>
+                    <strong>Pick a time with {first}</strong>
+                    {availabilityLabel}
+                  </span>
+                  <span aria-hidden="true">→</span>
+                </button>
+              )}
               <div className="chat-chips">
                 {chips.map((q) => (
                   <button key={q} disabled={busy} onClick={() => ask(q)}>

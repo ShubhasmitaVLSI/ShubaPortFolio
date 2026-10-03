@@ -10,7 +10,7 @@ export const profile = {
   location: "Bengaluru, India",
   years: "4.2+",
   linkedin: "https://www.linkedin.com/in/shubhasmitavlsi",
-  github: "https://github.com/ShubhasmitaVLSI",
+  booking: "/book",
   tagline:
     "IP and SoC verification, timing-aware validation, GLS-SDF, FIFO verification, assertions, coverage closure, emulation support and debug that holds up on silicon.",
 };

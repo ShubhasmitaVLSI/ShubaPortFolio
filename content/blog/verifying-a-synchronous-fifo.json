@@ -1,0 +1,18 @@
+{
+  "slug": "verifying-a-synchronous-fifo",
+  "title": "Verifying a Synchronous FIFO: Corners That Bite",
+  "description": "How I verify a synchronous FIFO with a queue-based scoreboard, flag assertions and targeted coverage.",
+  "content": "Synchronous FIFOs look simple: a memory, a write pointer and a read pointer. Most FIFO bugs hide at the boundaries, though: the cycle it fills, the cycle it drains, and the cycle a read and a write happen together.\n\nThis post walks through how I approach verifying one.\n\n## What the design promises\n\nA FIFO's contract is short:\n\n- Data comes out in the same order it went in.\n- `full` asserts when no more writes can be accepted, and `empty` when nothing is left to read.\n- A write while full, or a read while empty, changes nothing.\n\nEvery check below traces back to one of these lines.\n\n## The handshake\n\nHere is a write of two words followed by a read, with `full` and `empty` tracking occupancy:\n\n```wave\n# Write two words, then read one back\nclk   : p.........\nwr_en : 0.1.0.....\nwdata : x.=.x..... | A5 3C\nrd_en : 0.....1.0.\nempty : 1..0......\n```\n\n## A reference model in the scoreboard\n\nThe simplest scoreboard is a SystemVerilog queue that mirrors what the FIFO should hold:\n\n```systemverilog\nclass fifo_scoreboard extends uvm_scoreboard;\n  `uvm_component_utils(fifo_scoreboard)\n\n  bit [7:0] model[$];\n\n  function void write_wr(fifo_item t);\n    if (!t.full) model.push_back(t.data);\n  endfunction\n\n  function void write_rd(fifo_item t);\n    bit [7:0] exp;\n    if (t.empty) return;\n    exp = model.pop_front();\n    if (t.data !== exp)\n      `uvm_error(\"SB\", $sformatf(\"Expected %0h, got %0h\", exp, t.data))\n  endfunction\nendclass\n```\n\n> [!TIP]\n> Sample `full` and `empty` on the same clock edge as the request. Sampling a cycle late is the most common source of false mismatches.\n\n## Assertions for the flags\n\nAssertions catch flag bugs at the exact cycle they happen:\n\n```sva\n// No write may land while the FIFO is full\nassert property (@(posedge clk) disable iff (!rst_n)\n  full && wr_en |=> $stable(wr_ptr));\n\n// empty and full are never both high\nassert property (@(posedge clk) disable iff (!rst_n)\n  !(full && empty));\n```\n\n## Coverage that matters\n\n| Scenario | Why it matters |\n| --- | --- |\n| Write while full | Overflow protection |\n| Read while empty | Underflow protection |\n| Simultaneous read and write at full | Occupancy must stay constant |\n| Pointer wrap-around | Off-by-one in address logic |\n\nIf all four bins are hit and the scoreboard stays clean, I trust the FIFO.\n\n## Wrapping up\n\nModel the contract, assert the flags, and cover the corners. That pattern carries over to almost every block I verify.\n",
+  "tags": [
+    "verification",
+    "uvm",
+    "systemverilog",
+    "fifo"
+  ],
+  "cover": "",
+  "status": "published",
+  "featured": false,
+  "createdAt": "2026-10-03T09:00:00.000Z",
+  "updatedAt": "2026-10-03T09:00:00.000Z",
+  "publishedAt": "2026-10-03T09:00:00.000Z"
+}

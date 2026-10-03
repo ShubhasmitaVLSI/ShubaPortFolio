@@ -16,6 +16,7 @@ import Kicker from "@/components/Kicker";
 import Hud from "@/components/Hud";
 import Glossary from "@/components/Glossary";
 import { uvmTerms } from "@/lib/dv";
+import { availabilityLabel } from "@/lib/booking";
 import {
   aiUses,
   approach,
@@ -394,13 +395,17 @@ export default function Home() {
             Open to conversations on IP and SoC verification, verification architecture and AI-assisted DV.
           </p>
           <div className="hero-actions center">
-            <a className="btn primary magnetic" href={profile.linkedin} target="_blank" rel="noreferrer">
-              Connect on LinkedIn <span aria-hidden="true">→</span>
+            <a className="btn primary magnetic" href={profile.booking}>
+              Book a 30-min call <span aria-hidden="true">→</span>
             </a>
-            <a className="btn ghost magnetic" href={profile.github} target="_blank" rel="noreferrer">
-              GitHub
+            <a className="btn ghost magnetic" href={profile.linkedin} target="_blank" rel="noreferrer">
+              Connect on LinkedIn
             </a>
           </div>
+          <p className="contact-avail">
+            <span className="live" aria-hidden="true" />
+            {availabilityLabel}
+          </p>
         </section>
       </main>
       <Footer />
