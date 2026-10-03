@@ -13,8 +13,9 @@
     "vlsi"
   ],
   "cover": "/blog/gls-p2-01-setup-slack.png",
-  "status": "draft",
+  "status": "published",
   "featured": false,
   "createdAt": "2026-10-04T06:00:00.000Z",
-  "updatedAt": "2026-10-04T06:00:00.000Z"
+  "updatedAt": "2026-10-03T18:50:00.000Z",
+  "publishedAt": "2026-10-03T18:50:00.000Z"
 }

@@ -13,8 +13,9 @@
     "vlsi"
   ],
   "cover": "/blog/gls-p1-01-flow.png",
-  "status": "draft",
+  "status": "published",
   "featured": false,
   "createdAt": "2026-10-04T05:30:00.000Z",
-  "updatedAt": "2026-10-04T06:00:00.000Z"
+  "updatedAt": "2026-10-03T18:45:00.000Z",
+  "publishedAt": "2026-10-03T18:45:00.000Z"
 }
