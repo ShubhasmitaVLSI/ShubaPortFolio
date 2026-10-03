@@ -355,3 +355,18 @@ export const growth = {
     "Verification knowledge systems and reusable engineering playbooks",
   ],
 };
+
+export const education = [
+  { years: "2021 — 2023", degree: "M.Tech", school: "Kalinga Institute of Industrial Technology (KIIT)" },
+  { years: "2015 — 2019", degree: "Bachelor's degree", school: "National Institute of Technology Rourkela" },
+];
+
+// Rows of the uvm_report_summary card under the skill tree: [severity, id, message].
+export const methodologyReport = [
+  ["UVM_INFO", "test plan", "feature-based, traceable"],
+  ["UVM_INFO", "stimulus", "constrained-random + directed"],
+  ["UVM_INFO", "checking", "SVA properties + scoreboards"],
+  ["UVM_INFO", "gate level", "GLS · PG-GLS · GLS-SDF"],
+  ["UVM_INFO", "power", "UPF-aware scenarios"],
+  ["UVM_INFO", "scale", "emulation + automated regressions"],
+] as const;

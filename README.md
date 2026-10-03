@@ -9,9 +9,12 @@ npm ci
 npm run dev
 ```
 
+`next dev` builds into `.next-dev/` and `next build` / `next start` use `.next/`, so a dev server can stay running while you build and check production.
+
 ## Content and design
 
-- Profile, links, projects, and experience: `lib/data.ts`.
+- Profile, links, projects, experience, education and the rest of the home-page copy: `lib/data.ts`.
+- Home page: `app/page.tsx` lists the sections in order; each section's markup lives in `components/` (`Section.tsx` is the shared heading layout).
 - Skill hierarchy and career ER schema: `lib/structure.ts`.
 - DV glossary and phase navigation: `lib/dv.ts`.
 - Circuit Atlas: `components/CircuitAtlas.tsx`; connected expertise nodes open matching project archive entries.
@@ -74,7 +77,7 @@ npm audit
 npm run start -- --port 3100
 ```
 
-In another terminal, run `npm run test:e2e`. Run with `BOOKING_DRY_RUN=1` on the server and in the test environment to cover booking submission without creating events. To include the blog author flow, start the server with blog credentials and set `BLOG_TEST_EMAIL` and `BLOG_TEST_PASSWORD` to the same values. The tests use locally installed Microsoft Edge and cover desktop and mobile viewports. Install Edge if it is unavailable, or change `channel` in `playwright.config.ts` to an installed Playwright browser. `TEST_BASE_URL` can point tests to another running instance.
+In another terminal, run `npm run test:e2e`. Run with `BOOKING_DRY_RUN=1` on the server and in the test environment to cover booking submission without creating events. To include the blog author flow, start the server with blog credentials and set `BLOG_TEST_EMAIL` and `BLOG_TEST_PASSWORD` to the same values. The tests use locally installed Microsoft Edge and cover desktop and mobile viewports. Without Edge, set `PW_CHANNEL=chromium` to use Playwright's bundled Chromium (`npx playwright install chromium`). `TEST_BASE_URL` can point tests to another running instance.
 
 The suite checks navigation, all themes, persistence, atlas-to-project links, modal keyboard behavior, skill collapse and inspection, ER selection/drag/reset, glossary interaction, carousel controls, chat persistence/reset, invalid API payloads, asset responses, responsive overflow, and reduced motion. Screenshots and failure traces are written to `test-results/` (ignored by Git). Mobile checks use Chromium emulation, not physical iOS Safari.
 
