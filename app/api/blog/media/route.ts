@@ -2,7 +2,8 @@ import { randomBytes } from "node:crypto";
 import { currentAdmin } from "@/lib/auth";
 import { BlogError, MEDIA_TYPES, saveMedia, type MediaExt } from "@/lib/blog-store";
 
-const MAX_BYTES = 5 * 1024 * 1024;
+// Vercel caps request bodies at 4.5 MB; stay under it so the error message is ours.
+const MAX_BYTES = 4 * 1024 * 1024;
 
 // Trust the file's leading bytes, not its declared type: SVG and anything else is refused.
 function sniff(b: Buffer): MediaExt | null {
@@ -18,7 +19,7 @@ export async function POST(request: Request) {
   const form = await request.formData().catch(() => null);
   const file = form?.get("file");
   if (!(file instanceof File)) return Response.json({ error: "No image received." }, { status: 400 });
-  if (file.size > MAX_BYTES) return Response.json({ error: "Images must be under 5 MB." }, { status: 413 });
+  if (file.size > MAX_BYTES) return Response.json({ error: "Images must be under 4 MB." }, { status: 413 });
   const data = Buffer.from(await file.arrayBuffer());
   const ext = sniff(data);
   if (!ext) return Response.json({ error: "Use a PNG, JPEG, WebP or GIF image." }, { status: 415 });

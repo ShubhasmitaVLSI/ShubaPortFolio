@@ -28,7 +28,7 @@ npm run dev
 Markdown supports headings, emphasis, links, images with captions, lists, checklists, tables, fenced code, quotes and callouts (`> [!TIP]`, `NOTE`, `IMPORTANT`, `WARNING`, `CAUTION`). All text is escaped, so raw HTML in a post shows as text.
 
 Editor extras:
-- **Images:** paste, drag-drop or click 🖼 to upload into the post, or upload a cover. Photos are downscaled to WebP (max 1800 px) in the browser. The server accepts only real PNG, JPEG, WebP or GIF data (checked by content, never SVG) up to 5 MB, and stores it beside the posts.
+- **Images:** paste, drag-drop or click 🖼 to upload into the post, or upload a cover. Photos are downscaled to WebP (max 1800 px) in the browser. The server accepts only real PNG, JPEG, WebP or GIF data (checked by content, never SVG) up to 4 MB, and stores it beside the posts.
 - **Code highlighting** for ` ```sv ` (SystemVerilog/UVM/SVA), ` ```py `, ` ```tcl ` and ` ```sh `.
 - **Timing diagrams:** in a ` ```wave ` block, write one signal per line, e.g. `clk : p......` or `data : x.=.=x | A5 3C`. Use `p`/`n` for clocks, `0`/`1` for levels, `x` for unknown, `z` for high-impedance, `=` for a bus value and `.` to hold. A `# line` becomes the caption. The ∿ toolbar button inserts an example.
 - **Scheduling:** set a future *Publish date* and click **Schedule**. The post stays hidden from visitors, RSS and the sitemap until then, then appears with no further action.
