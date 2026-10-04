@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PostStatus } from "@/lib/blog";
+import { useReadSlugs } from "@/components/blog/ReadingPath";
 
 export type ListItem = {
   slug: string;
@@ -37,6 +38,7 @@ function Cover({ post, large }: { post: ListItem; large?: boolean }) {
 }
 
 function Meta({ post }: { post: ListItem }) {
+  const read = useReadSlugs().includes(post.slug);
   return (
     <p className="post-meta">
       {post.status === "draft" && <span className="badge draft">Draft</span>}
@@ -44,6 +46,7 @@ function Meta({ post }: { post: ListItem }) {
       {post.featured && post.status === "published" && !post.scheduled && <span className="badge">Featured</span>}
       <span>{post.date}</span>
       <span>{post.minutes} min read</span>
+      {read && <span className="read-mark">✓ Read</span>}
     </p>
   );
 }

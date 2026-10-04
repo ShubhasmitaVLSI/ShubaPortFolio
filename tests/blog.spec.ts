@@ -14,6 +14,21 @@ test("visitors can browse the blog but not the editor", async ({ page }) => {
   expect(rss.headers()["content-type"]).toContain("application/rss+xml");
 });
 
+test("posts guide readers along the reading path and reveal fully as they scroll", async ({ page }) => {
+  await page.goto("/blog");
+  await page.locator(".path-overview").getByRole("link", { name: "Start reading" }).click();
+  await expect(page).toHaveURL(/\/blog\/verifying-a-synchronous-fifo$/);
+  await expect(page.locator(".path-stepper")).toContainText("Step 1 of 5");
+
+  // Scroll to the end: every block ends up visible and the post counts as read.
+  for (let i = 0; i < 30 && !(await page.locator(".path-next").isVisible()); i++) await page.mouse.wheel(0, 600);
+  await page.locator(".path-next").scrollIntoViewIfNeeded();
+  await expect(page.locator(".prose > .pm:not(.pm-in)")).toHaveCount(0);
+  await page.locator(".path-card.next").click();
+  await expect(page).toHaveURL(/\/blog\/gls-foundations-part-1-netlists-cells-liberty$/);
+  await expect(page.locator(".path-stepper li.done")).toHaveCount(1);
+});
+
 test("author can sign in, write, publish, edit and delete a post", async ({ page, browser }, testInfo) => {
   test.skip(!email || !password, "Set BLOG_TEST_EMAIL and BLOG_TEST_PASSWORD to run the author flow.");
   const title = `Closing coverage on a FIFO ${testInfo.project.name} ${Date.now()}`;

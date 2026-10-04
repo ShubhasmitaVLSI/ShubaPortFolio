@@ -4,9 +4,39 @@ import { useEffect, useState } from "react";
 import { deletePostAction } from "@/app/blog/actions";
 import type { Heading } from "@/lib/markdown";
 
+/** Time left, from how far the reader is through the article. */
+function useMinutesLeft(minutes: number) {
+  const [left, setLeft] = useState(minutes);
+  useEffect(() => {
+    const article = document.querySelector<HTMLElement>(".post .prose");
+    if (!article) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const r = article.getBoundingClientRect();
+      const read = Math.min(1, Math.max(0, (window.innerHeight * 0.4 - r.top) / r.height));
+      setLeft(Math.ceil(minutes * (1 - read)));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [minutes]);
+  return left;
+}
+
 /** Sticky "On this page" list that highlights the section being read. */
-export function Toc({ headings }: { headings: Heading[] }) {
+export function Toc({ headings, minutes }: { headings: Heading[]; minutes: number }) {
   const [active, setActive] = useState(headings[0]?.id ?? "");
+  const left = useMinutesLeft(minutes);
+  const at = Math.max(0, headings.findIndex((h) => h.id === active));
 
   useEffect(() => {
     const els = headings.map((h) => document.getElementById(h.id)).filter((el): el is HTMLElement => el !== null);
@@ -24,15 +54,18 @@ export function Toc({ headings }: { headings: Heading[] }) {
   return (
     <nav className="toc" aria-label="On this page">
       <p className="toc-title">On this page</p>
-      <ol>
-        {headings.map((h) => (
-          <li key={h.id} className={h.level === 3 ? "sub" : ""}>
+      <ol style={{ "--toc-progress": `${((at + 1) / headings.length) * 100}%` } as React.CSSProperties}>
+        {headings.map((h, i) => (
+          <li key={h.id} className={`${h.level === 3 ? "sub" : ""} ${i < at ? "passed" : ""}`}>
             <a href={`#${h.id}`} aria-current={active === h.id ? "true" : undefined}>
               {h.text}
             </a>
           </li>
         ))}
       </ol>
+      <p className="toc-left" aria-live="off">
+        {left > 0 ? `${left} min left` : "Finished · see what's next ↓"}
+      </p>
     </nav>
   );
 }

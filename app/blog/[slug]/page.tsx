@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ChatWidget } from "@/components/ChatWidget";
+import { PostMotion } from "@/components/blog/PostMotion";
 import { CodeCopy, DeleteButton, ShareBar, Toc } from "@/components/blog/PostTools";
+import { PathNext, PathStepper } from "@/components/blog/ReadingPath";
 import { currentAdmin } from "@/lib/auth";
 import { formatDate, isLive, isScheduled, postDate, readingMinutes, type Post } from "@/lib/blog";
+import { pathFor } from "@/lib/blog-paths";
 import { getPost, listPosts } from "@/lib/blog-store";
 import { profile } from "@/lib/data";
 import { renderMarkdown } from "@/lib/markdown";
@@ -44,10 +47,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   };
 }
 
-// Posts sharing the most tags first, then the most recent.
-function related(post: Post, all: Post[]) {
+// Posts sharing the most tags first, then the most recent. `skip` holds posts already linked as path steps.
+function related(post: Post, all: Post[], skip: string[]) {
   return all
-    .filter((p) => p.slug !== post.slug)
+    .filter((p) => p.slug !== post.slug && !skip.includes(p.slug))
     .map((p) => ({ p, shared: p.tags.filter((t) => post.tags.includes(t)).length }))
     .sort((a, b) => b.shared - a.shared || postDate(b.p).localeCompare(postDate(a.p)))
     .slice(0, 3)
@@ -60,7 +63,11 @@ export default async function PostPage({ params, searchParams }: { params: Param
   const { post, admin } = found;
   const { saved } = await searchParams;
   const { html, headings } = renderMarkdown(post.content);
-  const more = related(post, await listPosts());
+  const live = await listPosts();
+  const route = pathFor(post.slug, live);
+  const neighbours = route ? [route.path.steps[route.index - 1], route.path.steps[route.index + 1]] : [];
+  const more = related(post, live, neighbours.flatMap((s) => (s ? [s.slug] : [])));
+  const minutes = readingMinutes(post.content);
   const published = postDate(post);
   const edited = new Date(post.updatedAt).getTime() - new Date(published).getTime() > 86_400_000;
 
@@ -127,7 +134,7 @@ export default async function PostPage({ params, searchParams }: { params: Param
             <span>
               <strong>{profile.name}</strong>
               <small>
-                <time dateTime={published}>{formatDate(published)}</time> · {readingMinutes(post.content)} min read
+                <time dateTime={published}>{formatDate(published)}</time> · {minutes} min read
                 {edited && (
                   <>
                     {" "}
@@ -137,6 +144,7 @@ export default async function PostPage({ params, searchParams }: { params: Param
               </small>
             </span>
           </div>
+          {route && <PathStepper path={route.path} index={route.index} />}
         </header>
 
         {post.cover && (
@@ -146,10 +154,25 @@ export default async function PostPage({ params, searchParams }: { params: Param
         )}
 
         <div className={`post-layout ${headings.length > 1 ? "has-toc" : ""}`}>
+          {headings.length > 1 && (
+            <details className="toc-mobile">
+              <summary>
+                On this page <small>{headings.filter((h) => h.level === 2).length} sections · {minutes} min</small>
+              </summary>
+              <ol>
+                {headings.map((h) => (
+                  <li key={h.id} className={h.level === 3 ? "sub" : ""}>
+                    <a href={`#${h.id}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </details>
+          )}
           <article className="prose" dangerouslySetInnerHTML={{ __html: html }} />
-          {headings.length > 1 && <Toc headings={headings} />}
+          {headings.length > 1 && <Toc headings={headings} minutes={minutes} />}
         </div>
         <CodeCopy />
+        <PostMotion slug={post.slug} />
 
         <footer className="post-foot">
           <ShareBar title={post.title} />
@@ -170,9 +193,11 @@ export default async function PostPage({ params, searchParams }: { params: Param
           </div>
         </footer>
 
+        {route && <PathNext path={route.path} index={route.index} />}
+
         {more.length > 0 && (
           <section className="more-posts">
-            <h2>Keep reading</h2>
+            <h2>{route ? "More on these topics" : "Keep reading"}</h2>
             <div className="post-grid">
               {more.map((p) => (
                 <a className="post-card spot" href={`/blog/${p.slug}`} key={p.slug}>

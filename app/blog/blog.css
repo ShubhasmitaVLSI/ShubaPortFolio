@@ -769,7 +769,7 @@ a:hover .read-more span {
 }
 .prose pre {
   position: relative;
-  padding: 20px 22px;
+  padding: 40px 22px 20px;
   overflow-x: auto;
   border-radius: 14px;
   border: 1px solid var(--line-strong);
@@ -780,7 +780,7 @@ a:hover .read-more span {
 .prose pre[data-lang]::before {
   content: attr(data-lang);
   position: absolute;
-  top: 8px;
+  top: 11px;
   right: 76px;
   font: 11px var(--mono);
   text-transform: uppercase;
@@ -1572,5 +1572,631 @@ a:hover .read-more span {
   }
   .auth-card {
     padding: 28px 20px 22px;
+  }
+}
+
+/* ============ Reading paths ============ */
+.path-dot {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font: 600 12px var(--mono);
+  color: var(--muted);
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+  transition: color 0.3s, background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.3s var(--ease);
+}
+.path-dot svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.path-stage {
+  font: 500 11px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+}
+
+/* Stepper in the post header */
+.path-stepper {
+  margin-top: 28px;
+  padding: 16px 18px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.path-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 0 0 14px;
+  font: 12px var(--mono);
+  color: var(--faint);
+}
+.path-label span:first-child {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.path-label strong {
+  font: 600 14px var(--sans);
+  color: var(--ink);
+}
+.path-stepper ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--steps), minmax(0, 1fr));
+}
+.path-stepper li {
+  position: relative;
+}
+/* Connector from each dot to the next */
+.path-stepper li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: calc(50% + 18px);
+  right: calc(-50% + 18px);
+  height: 2px;
+  border-radius: 2px;
+  background: var(--line-strong);
+}
+.path-stepper li.before::after,
+.path-stepper li.done::after {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+.path-stepper a {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.path-stepper .path-stage {
+  font-size: 10px;
+  line-height: 1.3;
+  max-width: 14ch;
+}
+.path-stepper a:hover .path-dot {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.path-stepper li.before .path-dot {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.path-stepper li.done .path-dot {
+  color: var(--accent-ink);
+  border-color: transparent;
+  background: var(--accent);
+}
+.path-stepper li.current .path-dot {
+  color: var(--accent-ink);
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent);
+  animation: pathPulse 2.4s var(--ease) infinite;
+}
+.path-stepper li.current .path-stage {
+  color: var(--ink);
+}
+@keyframes pathPulse {
+  50% {
+    box-shadow: 0 0 0 9px color-mix(in srgb, var(--accent) 6%, transparent);
+  }
+}
+
+/* End-of-post guidance */
+.post .path-next {
+  margin-top: 64px;
+  max-width: 72ch;
+}
+.path-next-head h2 {
+  font-size: clamp(26px, 3vw, 34px);
+  margin: 6px 0 12px;
+}
+.path-progress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0 0 22px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.path-progress strong {
+  color: var(--ink);
+}
+.path-meter {
+  width: 120px;
+  height: 6px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--line);
+}
+.path-meter i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width 0.8s var(--ease);
+}
+.path-cards {
+  display: grid;
+  gap: 16px;
+}
+.path-cards.two {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+}
+.path-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 22px;
+}
+.path-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+.path-card.next {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, var(--surface)), var(--surface) 70%);
+}
+.path-card-kicker {
+  font: 500 11px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+.path-card.prev .path-card-kicker {
+  color: var(--faint);
+}
+.path-card strong {
+  font: 600 19px/1.3 var(--display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.path-card.prev strong {
+  font-size: 16px;
+}
+.path-card p {
+  margin: 0;
+  font-size: 15px;
+  color: var(--muted);
+}
+.path-card-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 8px;
+  font: 12px var(--mono);
+  color: var(--faint);
+}
+.path-arrow {
+  font-size: 18px;
+  color: var(--accent);
+  transition: transform 0.3s var(--ease);
+}
+.path-card.next:hover .path-arrow {
+  transform: translateX(5px);
+}
+.path-card.prev:hover .path-arrow {
+  transform: translateX(-5px);
+}
+
+/* "Start here" on the blog index */
+.blog .path-overview {
+  margin: 0 0 40px;
+  padding: 24px;
+}
+.path-overview-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px 32px;
+  margin-bottom: 22px;
+}
+.path-overview-head h2 {
+  font-size: clamp(24px, 3vw, 32px);
+  margin: 6px 0;
+}
+.path-overview-head p:not(.kicker) {
+  max-width: 560px;
+  margin: 0;
+  color: var(--muted);
+}
+.path-overview-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font: 12px var(--mono);
+  color: var(--faint);
+}
+.path-overview-cta .btn {
+  font-family: var(--sans);
+}
+.path-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+.path-track a {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg-2) 60%, transparent);
+  transition: border-color 0.3s, transform 0.35s var(--ease), background 0.3s;
+}
+.path-track a:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+.path-track strong {
+  font: 600 15px/1.35 var(--display);
+  color: var(--ink);
+}
+.path-track small {
+  margin-top: auto;
+  font: 12px var(--mono);
+  color: var(--faint);
+}
+.path-track li.done .path-dot {
+  color: var(--accent-ink);
+  border-color: transparent;
+  background: var(--accent);
+}
+.path-track li.resume a {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.path-track li.resume .path-dot {
+  color: var(--accent-ink);
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+/* Steps settle in one after another */
+html.js .path-overview .path-track li {
+  animation: rise 0.7s var(--ease) both;
+  animation-delay: calc(0.45s + var(--i) * 0.08s);
+}
+.read-mark {
+  color: var(--good);
+}
+
+/* ============ Mobile "On this page" ============ */
+.toc-mobile {
+  display: none;
+  margin: 0 0 8px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.toc-mobile summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 500;
+}
+.toc-mobile summary::-webkit-details-marker {
+  display: none;
+}
+.toc-mobile summary::after {
+  content: "+";
+  font: 18px var(--mono);
+  color: var(--accent);
+  transition: transform 0.3s var(--ease);
+}
+.toc-mobile[open] summary::after {
+  transform: rotate(45deg);
+}
+.toc-mobile small {
+  margin-left: auto;
+  font: 12px var(--mono);
+  color: var(--faint);
+}
+.toc-mobile ol {
+  list-style: none;
+  margin: 0;
+  padding: 0 16px 14px;
+  display: grid;
+  gap: 2px;
+}
+.toc-mobile li.sub {
+  padding-left: 14px;
+}
+.toc-mobile a {
+  display: block;
+  padding: 6px 0;
+  font-size: 14.5px;
+  color: var(--muted);
+}
+
+/* ============ TOC progress ============ */
+.toc ol {
+  position: relative;
+}
+.toc ol::before {
+  content: "";
+  position: absolute;
+  left: -17px;
+  top: 0;
+  width: 1px;
+  height: var(--toc-progress, 0%);
+  background: linear-gradient(var(--accent), var(--accent-2));
+  transition: height 0.5s var(--ease);
+}
+.toc li.passed a {
+  color: color-mix(in srgb, var(--muted) 70%, var(--faint));
+}
+.toc-left {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font: 12px var(--mono);
+  color: var(--faint);
+}
+
+/* ============ Reading motion (components/blog/PostMotion.tsx) ============ */
+/* Section headings carry an accent rule that draws in with the heading. */
+.prose h2::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 3px;
+  margin-top: 12px;
+  border-radius: 3px;
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+.prose > .pm {
+  opacity: 0;
+  translate: 0 22px;
+  transition: opacity 0.7s var(--ease), translate 0.8s var(--ease);
+}
+.prose > .pm.pm-in {
+  opacity: 1;
+  translate: 0 0;
+}
+.prose > h2.pm::after {
+  transform: scaleX(0);
+  transition: transform 0.9s var(--ease) 0.25s;
+}
+.prose > h2.pm-in::after {
+  transform: none;
+}
+.prose > .callout.pm,
+.prose > blockquote.pm {
+  translate: -18px 0;
+}
+.prose > .callout.pm-in,
+.prose > blockquote.pm-in {
+  translate: 0 0;
+}
+/* List items and table rows follow their block in, one after another. */
+.prose > ul.pm > li,
+.prose > ol.pm > li,
+.prose > .table-wrap.pm tbody > tr {
+  opacity: 0;
+  translate: -10px 0;
+  transition: opacity 0.5s var(--ease), translate 0.6s var(--ease);
+  transition-delay: calc(0.15s + var(--i, 0) * 0.06s);
+}
+.prose > .pm-in > li,
+.prose > .table-wrap.pm-in tbody > tr {
+  opacity: 1;
+  translate: 0 0;
+}
+/* Timing diagrams draw left to right, like a simulator advancing time. */
+.prose > .wave.pm svg {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.6s cubic-bezier(0.45, 0, 0.25, 1) 0.2s;
+}
+.prose > .wave.pm-in svg {
+  clip-path: inset(0 0 0 0);
+}
+.prose > figure.pm:not(.wave) img {
+  scale: 0.97;
+  transition: scale 1s var(--ease), opacity 0.5s;
+}
+.prose > figure.pm-in img {
+  scale: 1;
+}
+
+/* Images: shimmer while loading, zoom on click */
+.prose img {
+  transition: opacity 0.5s var(--ease);
+}
+.prose figure.img-loading {
+  min-height: 180px;
+  border-radius: 12px;
+  background: linear-gradient(100deg, var(--bg-2) 30%, color-mix(in srgb, var(--accent) 10%, var(--bg-2)) 50%, var(--bg-2) 70%) 0 0 / 300% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+.prose .img-loading img {
+  opacity: 0;
+}
+.prose figure.img-error {
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px dashed var(--line-strong);
+  text-align: center;
+}
+@keyframes shimmer {
+  to {
+    background-position: -300% 0;
+  }
+}
+.prose img.zoomable {
+  cursor: zoom-in;
+}
+.prose img.zoomable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.lightbox {
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 24px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: zoom-out;
+}
+.lightbox[open] {
+  display: grid;
+  place-items: center;
+}
+.lightbox::backdrop {
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(8px);
+}
+.lightbox figure {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  cursor: default;
+  animation: zoomIn 0.35s var(--ease);
+}
+.lightbox img {
+  max-width: min(1400px, calc(100vw - 48px));
+  max-height: calc(100dvh - 110px);
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+  box-shadow: var(--shadow);
+}
+.lightbox figcaption {
+  max-width: 70ch;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+.lightbox-close {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 22px;
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+}
+.lightbox-close:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    scale: 0.94;
+  }
+}
+
+/* Wide tables and waveforms fade the edge that has more to scroll. */
+.prose .scroll-x:not(.scroll-end) {
+  mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent);
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent);
+}
+.prose .scroll-x:not(.scroll-start).scroll-end {
+  mask-image: linear-gradient(90deg, transparent, #000 48px);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 48px);
+}
+.prose .scroll-x:not(.scroll-start):not(.scroll-end) {
+  mask-image: linear-gradient(90deg, transparent, #000 48px, #000 calc(100% - 48px), transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 48px, #000 calc(100% - 48px), transparent);
+}
+
+@media (max-width: 1100px) {
+  .toc-mobile {
+    display: block;
+  }
+}
+@media (max-width: 760px) {
+  .path-cards.two {
+    grid-template-columns: 1fr;
+  }
+  /* On a phone the next step comes first; the previous one is a smaller second option. */
+  .path-cards.two .prev {
+    order: 1;
+  }
+  .blog .path-overview {
+    padding: 18px;
+  }
+  /* Steps become a swipeable row instead of a tall stack. */
+  .path-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    margin: 0 -18px;
+    padding: 2px 18px 6px;
+    scroll-padding-inline: 18px;
+    scrollbar-width: none;
+  }
+  .path-track::-webkit-scrollbar {
+    display: none;
+  }
+  .path-track li {
+    flex: 0 0 72%;
+    scroll-snap-align: start;
+  }
+}
+@media (max-width: 520px) {
+  .path-stepper {
+    padding: 14px 12px 12px;
+  }
+  .path-stepper .path-stage {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .path-stepper li.current .path-dot,
+  .prose figure.img-loading {
+    animation: none;
+  }
+}
+@media print {
+  .prose > .pm,
+  .prose > .pm > li,
+  .prose > .pm tbody > tr {
+    opacity: 1 !important;
+    translate: none !important;
+  }
+  .prose > .pm svg {
+    clip-path: none !important;
+  }
+  .path-stepper,
+  .path-next,
+  .toc-mobile,
+  .lightbox {
+    display: none !important;
   }
 }

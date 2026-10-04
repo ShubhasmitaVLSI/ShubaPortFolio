@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { ChatWidget } from "@/components/ChatWidget";
 import BlogList, { type ListItem } from "@/components/blog/BlogList";
+import { PathOverview } from "@/components/blog/ReadingPath";
 import { currentAdmin } from "@/lib/auth";
 import { formatDate, isLive, isScheduled, plainText, postDate, readingMinutes } from "@/lib/blog";
+import { READING_PATHS, resolvePath } from "@/lib/blog-paths";
 import { listPosts } from "@/lib/blog-store";
 import { profile } from "@/lib/data";
 
@@ -32,7 +34,9 @@ export default async function BlogIndex({ searchParams }: { searchParams: Search
     minutes: readingMinutes(p.content),
     search: `${p.title} ${p.description} ${p.tags.join(" ")} ${plainText(p.content).slice(0, 4000)}`.toLowerCase(),
   }));
-  const published = posts.filter((p) => isLive(p)).length;
+  const live = posts.filter((p) => isLive(p));
+  const published = live.length;
+  const paths = READING_PATHS.map((p) => resolvePath(p, live)).filter((p) => p.steps.length > 1);
 
   return (
     <>
@@ -68,6 +72,9 @@ export default async function BlogIndex({ searchParams }: { searchParams: Search
             Post deleted.
           </p>
         )}
+        {paths.map((p) => (
+          <PathOverview key={p.id} path={p} />
+        ))}
         <BlogList posts={items} admin={Boolean(admin)} initialQuery={params.q ?? ""} initialTag={params.tag ?? ""} />
         {!admin && (
           <p className="blog-signin">
