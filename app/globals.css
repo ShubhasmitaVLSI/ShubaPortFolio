@@ -1237,7 +1237,7 @@ html.js [data-reveal].in {
   transform: translateY(-2px);
 }
 
-.chip {
+.chip-die {
   margin: 0;
   position: relative;
 }
@@ -1248,7 +1248,7 @@ html.js [data-reveal].in {
   margin: 0 auto;
   animation: float 7s ease-in-out infinite;
 }
-.chip svg {
+.chip-die svg {
   width: 100%;
   display: block;
   filter: drop-shadow(0 30px 60px color-mix(in srgb, var(--accent) 22%, transparent));
@@ -1407,16 +1407,16 @@ html.js [data-reveal].in {
   font: 10px var(--mono);
   fill: var(--good, #4ade80);
 }
-.chip figcaption {
+.chip-die figcaption {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 8px;
 }
-.chip figcaption strong {
+.chip-die figcaption strong {
   font-family: var(--display);
 }
-.chip figcaption span {
+.chip-die figcaption span {
   font: 12px var(--mono);
   color: var(--faint);
 }
@@ -2555,7 +2555,7 @@ html.js [data-reveal].in {
   .terminal {
     transform: none;
   }
-  .chip svg {
+  .chip-die .chip-stage {
     max-width: 340px;
   }
   .roadmap {

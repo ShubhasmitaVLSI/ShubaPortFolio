@@ -37,7 +37,7 @@ export default function ChipDie() {
   }, []);
 
   return (
-    <figure className="chip">
+    <figure className="chip-die">
       <div className="chip-stage">
         <svg viewBox="0 0 400 400" aria-hidden="true">
           <defs>
