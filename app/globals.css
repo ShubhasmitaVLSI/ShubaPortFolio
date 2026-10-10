@@ -2643,3 +2643,41 @@ html.js [data-reveal].in {
   .atlas-detail-index { font-size: 24px; }
   .atlas-node strong, .atlas-compact .atlas-node strong { font-size: 10px; }
 }
+
+/* Chat feedback uses the current theme and respects motion preferences. */
+.chat-panel[data-busy="true"] .chat-head small i {
+  animation: assistant-signal 1.4s ease-in-out infinite;
+}
+.chat-log .chat-msg {
+  animation: assistant-message 180ms ease-out both;
+}
+.chat-retry {
+  margin: 8px 16px;
+  padding: 9px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  color: var(--ink);
+  background: var(--surface);
+  text-align: left;
+}
+@keyframes assistant-signal {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 5px transparent;
+  }
+}
+@keyframes assistant-message {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-panel[data-busy="true"] .chat-head small i,
+  .chat-log .chat-msg {
+    animation: none;
+  }
+}

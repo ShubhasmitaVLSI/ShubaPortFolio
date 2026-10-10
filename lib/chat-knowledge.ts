@@ -12,6 +12,7 @@ import {
   stack,
 } from "./data";
 import { availabilityLabel } from "./booking";
+import { glossary } from "./dv";
 
 const first = profile.first;
 
@@ -48,12 +49,18 @@ export function buildKnowledge() {
   roadmap.forEach((r) => lines.push(`- ${r.phase} (${r.label}): ${r.items.join(", ")}`));
   lines.push("", "# Growth interests", `Primary: ${growth.primary.join("; ")}`, `Adjacent: ${growth.adjacent.join("; ")}`);
   lines.push("", "# Certifications", ...certifications.map((c) => `- ${c.name} — ${c.by} (${c.year})`));
+  lines.push("", "# DV glossary", ...glossary.map(g => g.term + " (" + g.full + "): " + g.def));
   return lines.join("\n");
 }
 
 export type SectionContext = { label: string; hint: string; questions: string[] };
 
 export const sectionContexts: Record<string, SectionContext> = {
+  atlas: { label: "the capability map", hint: "the interactive verification capability map", questions: ["Which verification flows are covered?", "Tell me about GLS-SDF debug"] },
+  glossary: { label: "the DV glossary", hint: "the design verification glossary", questions: ["What is SVA?", "What is coverage closure?"] },
+  lexicon: { label: "the DV Lexicon", hint: "the detailed design verification term guides", questions: ["What is UVM?", "Which verification flows are covered?"] },
+  blog: { label: "the verification blog", hint: "the technical blog and verification reading paths", questions: ["Tell me about FIFO verification", "What is SDF back-annotation?"] },
+  booking: { label: "call booking", hint: "the scheduling page", questions: ["How can I book a call?", "How can I contact Shubhasmita?"] },
   top: { label: "the introduction", hint: "the hero introduction", questions: [`What does ${first} do?`, "What's the tech stack?"] },
   impact: { label: "the verification summary", hint: "the highlights and metrics", questions: ["What SoC verification has she done?"] },
   about: { label: "the profile", hint: "the professional profile", questions: [`What are ${first}'s career goals?`] },
@@ -129,6 +136,10 @@ export function localAnswer(question: string): string {
   const direct = profileAnswer(question);
   if (direct) return direct;
   const q = question.toLowerCase();
+  if (/^(?:what (?:is|are)|define|explain|meaning of)\b/.test(q.trim())) {
+    const term = glossary.find(g => q.includes(g.term.toLowerCase()) || q.includes(g.full.toLowerCase()));
+    if (term) return term.term + " — " + term.full + ". " + term.def;
+  }
   const project = projects.find((p) =>
     p.title
       .toLowerCase()

@@ -27,7 +27,9 @@ function useCurrentSection() {
   const pathname = usePathname();
   const [section, setSection] = useState("top");
   useEffect(() => {
-    if (pathname.startsWith("/projects")) return setSection("projects");
+    const route = pathname.startsWith("/projects") ? "projects" : pathname.startsWith("/lexicon") ? "lexicon" : pathname.startsWith("/blog") ? "blog" : pathname === "/book" ? "booking" : "top";
+    setSection(route);
+    if (route !== "top") return;
     const nodes = [...document.querySelectorAll<HTMLElement>("main section[id]")].filter((n) =>
       Object.hasOwn(sectionContexts, n.id)
     );
@@ -91,6 +93,7 @@ export function ChatWidget() {
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const launchRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   const section = useCurrentSection();
   const sectionRef = useRef(section);
   useEffect(() => {
@@ -101,7 +104,7 @@ export function ChatWidget() {
   );
   const context = sectionContexts[section] ?? sectionContexts.top;
   const chips = [...new Set([...context.questions, ...suggestedQuestions])].slice(0, 4);
-  const { messages, sendMessage, status, error, clearError, setMessages } = useChat({ messages: initial, transport });
+  const { messages, sendMessage, status, error, clearError, setMessages, stop, regenerate } = useChat({ messages: initial, transport });
   const busy = status === "submitted" || status === "streaming";
   const lastUser = [...messages].reverse().find((m) => m.role === "user");
   const offerBooking = Boolean(lastUser && wantsBooking(textOf(lastUser)));
@@ -117,6 +120,7 @@ export function ChatWidget() {
       if (sessionStorage.getItem(TEASED)) return;
     } catch {}
     const t = window.setTimeout(() => {
+      if (document.querySelector('.palette-btn[aria-expanded="true"], [role="dialog"]')) return;
       setTeaser(true);
       try {
         sessionStorage.setItem(TEASED, "1");
@@ -124,6 +128,16 @@ export function ChatWidget() {
     }, 3500);
     return () => clearTimeout(t);
   }, []);
+
+  useEffect(() => {
+    const stepAside = (event: MouseEvent) => {
+      if (event.target instanceof Element && event.target.closest("header.nav")) setTeaser(false);
+    };
+    document.addEventListener("click", stepAside, true);
+    return () => document.removeEventListener("click", stepAside, true);
+  }, []);
+
+  function closeChat() { setOpen(false); launchRef.current?.focus(); }
 
   // The teaser steps aside on its own so it never parks over content; on
   // phones, where it covers the page, scrolling on also dismisses it.
@@ -155,6 +169,7 @@ export function ChatWidget() {
     setGreet(hello());
     setTeaser(false);
     if (view === "chat") inputRef.current?.focus();
+    else closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpen(false);
@@ -182,7 +197,7 @@ export function ChatWidget() {
   return (
     <div className="chat">
       {open && (
-        <section className="chat-panel" role="dialog" aria-label={`Chat with ${first}'s assistant`}>
+        <section id="portfolio-chat-panel" className="chat-panel" data-busy={busy} role="dialog" aria-label={`Chat with ${first}'s assistant`}>
           <header className="chat-head">
             <span className="chat-avatar" aria-hidden="true">
               SS
@@ -192,7 +207,7 @@ export function ChatWidget() {
                 {greet.title} <span aria-hidden="true">{greet.icon}</span>
               </strong>
               <small>
-                <i /> Portfolio assistant
+                <i aria-hidden="true" /> {busy ? "Assistant responding…" : "Portfolio assistant"}
               </small>
             </div>
             <button
@@ -208,7 +223,7 @@ export function ChatWidget() {
             >
               ↺
             </button>
-            <button className="chat-x" aria-label="Close chat" onClick={() => setOpen(false)}>
+            <button ref={closeRef} className="chat-x" aria-label="Close chat" onClick={closeChat}>
               ×
             </button>
           </header>
@@ -283,6 +298,7 @@ export function ChatWidget() {
                   </p>
                 ))}
               </div>
+              {error && !busy && lastUser && <button className="chat-retry" onClick={() => { clearError(); void regenerate(); }}>Retry last question</button>}
               {offerBooking && !busy && (
                 <button className="chat-book-cta" onClick={() => setView("book")}>
                   <span aria-hidden="true">📅</span>
@@ -309,9 +325,7 @@ export function ChatWidget() {
                   maxLength={600}
                   aria-label="Your question"
                 />
-                <button type="submit" disabled={busy || !input.trim()} aria-label="Send">
-                  ↑
-                </button>
+                {busy ? <button type="button" aria-label="Stop response" onClick={() => { void stop(); }}>■</button> : <button type="submit" disabled={!input.trim()} aria-label="Send">↑</button>}
               </form>
             </>
           )}
@@ -332,6 +346,7 @@ export function ChatWidget() {
         className={`chat-launch${open ? " on" : ""}`}
         aria-label={open ? "Close chat" : "Open chat"}
         aria-expanded={open}
+        aria-controls="portfolio-chat-panel"
         onClick={() => setOpen((v) => !v)}
       >
         {open ? (
