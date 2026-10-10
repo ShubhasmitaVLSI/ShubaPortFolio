@@ -13,3 +13,7 @@ coverage/
 test-results/
 playwright-report/
 ._*
+
+# Locally installed coding-agent skills (third-party docs, not site code)
+.agents/
+skills-lock.json
