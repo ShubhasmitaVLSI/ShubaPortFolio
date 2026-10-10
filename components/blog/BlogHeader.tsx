@@ -5,7 +5,7 @@ import { currentAdmin } from "@/lib/auth";
 export default async function BlogHeader() {
   const admin = await currentAdmin();
   return (
-    <header className="nav">
+    <header className="nav blog-header">
       <a className="brand" href="/">
         <span className="mark">SS</span>
         <span className="brand-name">Shubhasmita</span>
@@ -20,6 +20,7 @@ export default async function BlogHeader() {
         {admin ? (
           <>
             <a href="/blog/manage">Manage</a>
+            <a href="/blog/visitors">Visitors</a>
             <form action={logout}>
               <button type="submit" className="blog-nav-btn">
                 Sign out

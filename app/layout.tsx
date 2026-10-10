@@ -8,6 +8,8 @@ import "./explore.css";
 import "./palette.css";
 import { CommandPalette } from "@/components/CommandPalette";
 import { profile } from "@/lib/data";
+import ThemeCycle from "@/components/ThemeCycle";
+import VisitTracker from "@/components/VisitTracker";
 import { glossary, seoKeywords } from "@/lib/dv";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
@@ -68,6 +70,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </noscript>
         {children}
         <CommandPalette />
+        <ThemeCycle />
+        <VisitTracker />
       </body>
     </html>
   );

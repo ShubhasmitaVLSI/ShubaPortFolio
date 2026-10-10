@@ -47,6 +47,7 @@ export default async function Manage({ searchParams }: { searchParams: Search })
         <div>
           <p className="kicker">Author dashboard</p>
           <h1>Manage posts</h1>
+          <a href="/blog/visitors">View visitor analytics →</a>
         </div>
         <a className="btn primary" href="/blog/new">
           + New post

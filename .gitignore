@@ -17,3 +17,6 @@ playwright-report/
 # Locally installed coding-agent skills (third-party docs, not site code)
 .agents/
 skills-lock.json
+
+# Private local analytics
+.analytics/

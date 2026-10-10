@@ -96,3 +96,11 @@ Use the same `NEXT_DIST_DIR` for both build and start. Default deployments can o
 Import the repository into Vercel with the Next.js preset, or use a Node.js host that runs `npm ci`, `npm run build`, and `npm start`. Configure Node.js 22 or newer and optional provider keys in the hosting environment. A static-only host cannot run `/api/chat`.
 
 PostCSS is overridden to a patched 8.5.x release; retain the lockfile and run the build and audit after dependency changes. The app sends nosniff, same-origin framing, and strict-origin referrer headers.
+
+## Automatic themes and visitor analytics
+
+The global theme cycles through the ten existing themes every five minutes while the page is visible. Manual theme selection resets the interval. Pause/resume from Change theme → Auto theme; the preference persists locally. Reduced motion skips the color transition animation.
+
+After author login, open Visitors in the blog header or `/blog/visitors`. Only the authenticated author can read the dashboard. It shows anonymous page views (not unique people), IST timestamps, public page paths, referring domains and browser/device categories. No IPs, names, emails or persistent visitor IDs are stored. Query strings are excluded; author/admin views, known bots, DNT and GPC requests are skipped. Counts are best-effort and can include unrecognized bots or omit blocked requests.
+
+The Day/Week/Month charts use a page-view count per IST day, kept permanently from the first recorded day. Page, referrer and device details are kept for 30 days (at most 5,000 records). Local/Node analytics use ignored `.analytics/` files (optional `ANALYTICS_DIR`): daily detail files, pruned on writes and capped at 2 MB each, plus `daily-totals.json`. Redis uses the existing Upstash/Vercel KV settings: a rolling 30-day sorted set for detail and a `portfolio:visits:days` hash for the daily totals. Vercel requires Redis for durable analytics; no runtime disk fallback is attempted there. Data collection starts on deployment and cannot identify previous visitors.

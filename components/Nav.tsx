@@ -33,10 +33,17 @@ export default function Nav() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [theme, setTheme] = useState<string>("circuit");
   const [active, setActive] = useState("");
+  const [autoTheme, setAutoTheme] = useState(true);
   const paletteRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setTheme(document.documentElement.getAttribute("data-theme") || "circuit");
+    const root = document.documentElement;
+    const sync = () => setTheme(root.getAttribute("data-theme") || "circuit");
+    sync();
+    try { setAutoTheme(localStorage.getItem("dv-theme-auto") !== "off"); } catch {}
+    const observer = new MutationObserver(sync);
+    observer.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => observer.disconnect();
   }, []);
 
   // Highlight the section in view
@@ -136,6 +143,14 @@ export default function Nav() {
           {paletteOpen && (
             <div className="palette-menu" role="menu">
               <p className="palette-title">Theme · select corner</p>
+              <button className="palette-item" role="menuitemcheckbox" aria-checked={autoTheme} onClick={() => {
+                const next = !autoTheme;
+                setAutoTheme(next);
+                try { localStorage.setItem("dv-theme-auto", next ? "on" : "off"); } catch {}
+                window.dispatchEvent(new Event("dv-theme-auto-change"));
+              }}>
+                <span className="palette-text"><strong>Auto theme · {autoTheme ? "On" : "Off"}</strong><small>Change colors every 5 minutes</small></span>
+              </button>
               {(["dark", "light"] as const).map((tone) => (
                 <div key={tone} className="palette-group">
                   <p className="palette-sub">{tone === "dark" ? "Dark corners" : "Light corners"}</p>
