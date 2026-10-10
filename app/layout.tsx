@@ -4,6 +4,7 @@ import "./globals.css";
 import "./motion.css";
 import "./dv.css";
 import "./booking.css";
+import "./explore.css";
 import { profile } from "@/lib/data";
 import { glossary, seoKeywords } from "@/lib/dv";
 

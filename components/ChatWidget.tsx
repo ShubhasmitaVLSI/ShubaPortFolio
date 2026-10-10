@@ -125,11 +125,20 @@ export function ChatWidget() {
     return () => clearTimeout(t);
   }, []);
 
-  // The teaser steps aside on its own so it never parks over content.
+  // The teaser steps aside on its own so it never parks over content; on
+  // phones, where it covers the page, scrolling on also dismisses it.
   useEffect(() => {
     if (!teaser) return;
-    const t = window.setTimeout(() => setTeaser(false), 12000);
-    return () => clearTimeout(t);
+    const t = window.setTimeout(() => setTeaser(false), 7000);
+    const start = window.scrollY;
+    const onScroll = () => {
+      if (window.innerWidth < 760 && Math.abs(window.scrollY - start) > 120) setTeaser(false);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [teaser]);
 
   useEffect(() => {

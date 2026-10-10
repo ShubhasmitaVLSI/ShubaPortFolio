@@ -1,11 +1,8 @@
 import About from "@/components/About";
-import AiUses from "@/components/AiUses";
-import Approach from "@/components/Approach";
 import Boot from "@/components/Boot";
+import CapabilityWheel from "@/components/CapabilityWheel";
 import { ChatWidget } from "@/components/ChatWidget";
-import CircuitAtlas from "@/components/CircuitAtlas";
 import Contact from "@/components/Contact";
-import Education from "@/components/Education";
 import Effects from "@/components/Effects";
 import ErDiagram from "@/components/ErDiagram";
 import Footer from "@/components/Footer";
@@ -18,6 +15,7 @@ import Marquees from "@/components/Marquees";
 import MethodologyReport from "@/components/MethodologyReport";
 import Metrics from "@/components/Metrics";
 import Nav from "@/components/Nav";
+import Notebook from "@/components/Notebook";
 import Roadmap from "@/components/Roadmap";
 import Section from "@/components/Section";
 import SkillTree from "@/components/SkillTree";
@@ -39,9 +37,14 @@ export default function Home() {
           id="atlas"
           kicker={<p className="kicker">01 / Capability map</p>}
           title={<>Explore the <em>verification skills map.</em></>}
-          aside={<p>A map of core verification capabilities. Select one for a generalized summary; no project data is shown.</p>}
+          aside={
+            <p>
+              Five core capabilities orbit one engineer. Pick one, or use the arrow keys, to turn it to the top of the
+              dial and open its flow, skills and case file.
+            </p>
+          }
         >
-          <CircuitAtlas />
+          <CapabilityWheel />
         </Section>
 
         <Section
@@ -103,7 +106,7 @@ export default function Home() {
           title={<>Instantiated like a <em>testbench</em>.</>}
           aside={
             <p>
-              Skills arranged as a UVM component tree. Click a branch to collapse it and hover a leaf to inspect it;
+              Skills arranged as a UVM component tree. Click a branch to collapse it, hover a leaf to preview it and click to pin it;
               signals trace the path from the top.
             </p>
           }
@@ -114,16 +117,16 @@ export default function Home() {
 
         <Section
           id="approach"
-          kicker={<Kicker id="approach">Engineering approach</Kicker>}
+          kicker={<Kicker id="approach">Engineering notebook</Kicker>}
           title={<>Every technique covers a <em>different</em> risk.</>}
           aside={
             <p>
-              Improvement runs as a recurring loop: after each project or complex debug, lessons become checklists,
-              assertions, scripts or components.
+              How the work gets done, where AI fits in, and how the learning keeps going. Switch chapters and open a row;
+              lessons from each project feed back into the loop.
             </p>
           }
         >
-          <Approach />
+          <Notebook />
         </Section>
 
         <Section
@@ -141,20 +144,6 @@ export default function Home() {
         </Section>
 
         <Section
-          id="ai"
-          kicker={<Kicker id="ai">AI-assisted VLSI</Kicker>}
-          title={<>AI as a <em>layer</em>, judgment stays human.</>}
-          aside={
-            <p>
-              AI is there to speed up work and help find information. Architecture understanding, engineering
-              judgment, confidentiality and final verification decisions stay with the engineer.
-            </p>
-          }
-        >
-          <AiUses />
-        </Section>
-
-        <Section
           id="roadmap"
           kicker={<Kicker id="roadmap">Career roadmap</Kicker>}
           title={<>Toward <em>Staff / Principal</em>-track DV.</>}
@@ -166,20 +155,6 @@ export default function Home() {
           }
         >
           <Roadmap />
-        </Section>
-
-        <Section
-          id="education"
-          kicker={<Kicker>Education &amp; development</Kicker>}
-          title={<>Learn → Apply → <em>Standardize</em>.</>}
-          aside={
-            <p>
-              Continuous improvement: deliberate learning, applied to real verification problems, with measurable
-              feedback and reflection.
-            </p>
-          }
-        >
-          <Education />
         </Section>
 
         <Contact />

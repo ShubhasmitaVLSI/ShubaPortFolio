@@ -48,22 +48,36 @@ test("project modal traps keyboard focus and restores it", async ({ page }) => {
   await card.click();
   const dialog = page.getByRole("dialog", { name: "IP Verification" });
   await expect(dialog).toBeVisible();
-  await page.keyboard.press("Tab");
   await expect(dialog.getByRole("button", { name: "Close", exact: true })).toBeFocused();
+  for (let i = 0; i < 6; i++) {
+    await page.keyboard.press("Tab");
+    expect(await dialog.evaluate(el => el.contains(document.activeElement))).toBe(true);
+  }
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveCount(0);
   await expect(card).toBeFocused();
 });
 
-test("ER selection, reset and glossary respond", async ({ page }) => {
+test("ER selection, reset and glossary respond", async ({ page }, testInfo) => {
   await page.goto("/");
-  const table = page.locator(".ent-head").nth(1);
-  await table.scrollIntoViewIfNeeded();
-  await table.focus();
-  await page.keyboard.press("Enter");
-  await expect(table.locator("..")).toHaveClass(/sel/);
-  await expect(page.locator(".sql-table")).toBeVisible();
-  await page.getByRole("button", { name: /Reset layout/ }).click();
+  if (testInfo.project.name === "mobile") {
+    // Phones get collapsible table cards instead of the canvas.
+    await expect(page.locator(".er-scroll")).toBeHidden();
+    const card = page.locator(".erc-head", { hasText: "EMPLOYER" });
+    await card.click();
+    await expect(card).toHaveAttribute("aria-expanded", "true");
+    await expect(page.locator(".sql-line")).toContainText("employer");
+    await page.locator(".erc", { has: card }).getByRole("button", { name: /delivers → PROJECT/ }).click();
+    await expect(page.locator(".erc-head", { hasText: "PROJECT" })).toHaveAttribute("aria-expanded", "true");
+  } else {
+    const table = page.locator(".ent-head").nth(1);
+    await table.scrollIntoViewIfNeeded();
+    await table.focus();
+    await page.keyboard.press("Enter");
+    await expect(table.locator("..")).toHaveClass(/sel/);
+    await expect(page.locator(".sql-table")).toBeVisible();
+    await page.getByRole("button", { name: /Reset layout/ }).click();
+  }
   const flip = page.locator(".flip").first();
   await flip.click();
   await expect(flip).toHaveAttribute("aria-pressed", "true");
@@ -186,4 +200,73 @@ test("ER dragging updates position and reset restores it", async ({ page }, test
   await page.getByRole("button", { name: /Reset layout/ }).click();
   await expect.poll(() => entity.evaluate(el => (el as HTMLElement).style.left)).toBe(initial);
   await page.locator(".er").screenshot({ path: "test-results/er-desktop.png" });
+});
+
+test("capability wheel rotates to the chosen capability and links onward", async ({ page }) => {
+  await page.goto("/");
+  const wheel = page.locator(".wheel");
+  await wheel.scrollIntoViewIfNeeded();
+  await wheel.getByRole("button", { name: /GATE-LEVEL SIM/ }).click();
+  await expect(wheel.getByRole("button", { name: /GATE-LEVEL SIM/ })).toHaveAttribute("aria-pressed", "true");
+  await expect(wheel.locator(".wheel-detail h3")).toHaveText("Gate-Level & Timing-Aware Verification");
+  await page.keyboard.press("ArrowRight");
+  await expect(wheel.locator(".wheel-detail h3")).toHaveText("Hardware Emulation & SVA");
+  await wheel.getByRole("button", { name: "Open case file" }).click();
+  await expect(page.getByRole("dialog", { name: "Hardware Emulation & SVA" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await wheel.locator(".wheel-skills .tag.link").first().click();
+  await expect(page.locator(".inspector-body h3")).toHaveText(
+    (await wheel.locator(".wheel-skills .tag.link").first().textContent())!.trim()
+  );
+});
+
+test("ER flow tour walks the joins and console rows link out", async ({ page }, testInfo) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await page.getByRole("button", { name: /Play the flow/ }).click();
+  await expect(page.locator(".sql-line")).toContainText("JOIN employer", { timeout: 6000 });
+  await expect(page.locator(".sql-line")).toContainText("JOIN project", { timeout: 6000 });
+  await page.getByRole("button", { name: /Stop/ }).click();
+  await expect(page.getByRole("button", { name: /Play the flow/ })).toBeVisible();
+  // The step list is a desktop control; phones pick the table card instead.
+  if (testInfo.project.name === "mobile") await page.locator(".erc-head", { hasText: "PROJECT" }).click();
+  else await page.getByLabel("Join path").getByRole("button", { name: "PROJECT", exact: true }).click();
+  await page.locator(".sql-table tr.linkable").first().click();
+  await expect(page.getByRole("dialog", { name: "IP Verification" })).toBeVisible();
+});
+
+test("skill inspector cross-links to the schema console", async ({ page }, testInfo) => {
+  await page.goto("/");
+  const mobile = testInfo.project.name === "mobile";
+  await page.locator(mobile ? ".tl-leaf" : ".tn.leaf", { hasText: "FIFO" }).first().click();
+  await page.getByRole("button", { name: /find in career.db/ }).click();
+  await expect(page.locator(".sql-line")).toContainText("FROM skill", { timeout: 6000 });
+  await expect(page.locator(".sql-table tr.hit")).toContainText("FIFO");
+});
+
+test("engineering notebook switches chapters and expands rows", async ({ page }) => {
+  await page.goto("/");
+  const nb = page.locator(".notebook");
+  await nb.scrollIntoViewIfNeeded();
+  await expect(nb.getByRole("button", { name: /Understand before verifying/ })).toHaveAttribute("aria-expanded", "true");
+  await nb.getByRole("radio", { name: /AI-assisted VLSI/ }).click();
+  await expect(nb.getByRole("radio", { name: /AI-assisted VLSI/ })).toHaveAttribute("aria-checked", "true");
+  const row = nb.getByRole("button", { name: /Log triage/ });
+  await row.click();
+  await expect(row).toHaveAttribute("aria-expanded", "true");
+  await expect(nb.getByText(/failure clustering/)).toBeVisible();
+  await expect(nb.getByRole("button", { name: /Spec retrieval/ })).toHaveAttribute("aria-expanded", "false");
+  await nb.getByRole("radio", { name: /Education/ }).click();
+  await nb.getByRole("button", { name: /Certifications/ }).click();
+  await expect(nb.getByText("Advanced Embedded Systems")).toBeVisible();
+});
+
+test("timeline duties collapse and expand", async ({ page }) => {
+  await page.goto("/");
+  const toggle = page.locator(".duties-toggle").first();
+  await toggle.scrollIntoViewIfNeeded();
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator(".journey .collapse.open li").first()).toBeVisible();
 });

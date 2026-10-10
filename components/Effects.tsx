@@ -79,7 +79,7 @@ export default function Effects() {
   useEffect(() => {
     if (!window.matchMedia("(pointer: fine)").matches) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const TILT = ".card, .metric, .road, .edu-card, .approach-card, .ai-card, .stack-card";
+    const TILT = ".card, .metric, .road, .stack-card";
     let tilted: HTMLElement | null = null;
     let magnet: HTMLElement | null = null;
 

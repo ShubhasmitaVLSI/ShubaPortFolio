@@ -250,3 +250,42 @@ export const schema: { width: number; height: number; entities: Entity[]; relati
     { from: "engineer", to: "goal", verb: "pursues", fromCard: "one", toCard: "many" },
   ],
 };
+
+/* ---------- Guided walk through the schema joins ---------- */
+
+export type TourStep = { id: string; verb?: string; sql: string; cols?: string[] };
+
+/** One engineer → employer → projects → skills → flows, then where it is heading. */
+export const schemaTour: TourStep[] = [
+  { id: "engineer", sql: "SELECT * FROM engineer;" },
+  {
+    id: "employer",
+    verb: "works_at",
+    sql: "SELECT e.name, e.title, e.since FROM engineer g JOIN employer e ON e.engineer_id = g.engineer_id;",
+    cols: ["name", "title", "since"],
+  },
+  {
+    id: "project",
+    verb: "delivers",
+    sql: "SELECT p.project_id, p.title, p.period FROM employer e JOIN project p ON p.employer_id = e.employer_id;",
+    cols: ["project_id", "title", "period"],
+  },
+  {
+    id: "skill",
+    verb: "applies",
+    sql: "SELECT DISTINCT s.name, s.category FROM project p JOIN project_skill ps USING (project_id) JOIN skill s USING (skill_id);",
+    cols: ["name", "category"],
+  },
+  {
+    id: "flow",
+    verb: "powers",
+    sql: "SELECT f.name, f.checks FROM skill s JOIN skill_flow sf USING (skill_id) JOIN verification_flow f USING (flow_id);",
+    cols: ["name", "checks"],
+  },
+  {
+    id: "goal",
+    verb: "pursues",
+    sql: "SELECT horizon, focus FROM career_goal WHERE engineer_id = 1 ORDER BY goal_id;",
+    cols: ["horizon", "focus"],
+  },
+];

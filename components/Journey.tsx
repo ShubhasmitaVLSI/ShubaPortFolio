@@ -1,11 +1,20 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { experience } from "@/lib/data";
+import Collapse from "./Collapse";
 
 export default function Journey() {
   const wrap = useRef<HTMLDivElement>(null);
   const fill = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState<Set<number>>(new Set());
+  const toggle = (i: number) =>
+    setOpen((s) => {
+      const n = new Set(s);
+      if (n.has(i)) n.delete(i);
+      else n.add(i);
+      return n;
+    });
 
   // The spine fills as the timeline scrolls through the viewport.
   useEffect(() => {
@@ -51,18 +60,29 @@ export default function Journey() {
               <strong>{r.title}</strong>. {r.blurb}
             </p>
             {r.duties.length > 0 && (
-            <div className="duties">
-              {r.duties.map((d) => (
-                <div key={d.heading}>
-                  <h4>{d.heading}</h4>
-                  <ul>
-                    {d.items.map((it) => (
-                      <li key={it}>{it}</li>
+              <>
+                <button
+                  className="duties-toggle"
+                  aria-expanded={open.has(i)}
+                  aria-controls={`duties-${i}`}
+                  onClick={() => toggle(i)}
+                >
+                  <span className="nb-caret" aria-hidden="true" />
+                  {r.duties.map((d) => d.heading).join(" · ")}
+                  <small>{r.duties.reduce((n, d) => n + d.items.length, 0)} points</small>
+                </button>
+                <Collapse open={open.has(i)} id={`duties-${i}`}>
+                  <div className="duties">
+                    {r.duties.map((d) => (
+                      <ul key={d.heading} aria-label={d.heading}>
+                        {d.items.map((it) => (
+                          <li key={it}>{it}</li>
+                        ))}
+                      </ul>
                     ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+                  </div>
+                </Collapse>
+              </>
             )}
           </div>
         </article>

@@ -1700,7 +1700,6 @@ html.js [data-reveal].in {
   padding: 28px;
 }
 .journey-card time,
-.edu-card time,
 .road time {
   font: 12px var(--mono);
   color: var(--accent);
@@ -1857,37 +1856,7 @@ html.js [data-reveal].in {
   color: var(--good, #4ade80);
 }
 
-/* ============ Approach ============ */
-.approach {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 40px;
-  align-items: center;
-}
-.approach-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-.approach-card {
-  padding: 24px;
-}
-.approach-card:hover {
-  transform: translateY(-4px);
-}
-.approach-idx {
-  font: 12px var(--mono);
-  color: var(--accent);
-}
-.approach-card h3 {
-  font-size: 19px;
-  margin: 10px 0 8px;
-}
-.approach-card p {
-  margin: 0;
-  font-size: 14.5px;
-  color: var(--muted);
-}
+/* ============ Improvement loop ============ */
 .cycle {
   position: relative;
   width: min(100%, 380px);
@@ -1959,58 +1928,6 @@ html.js [data-reveal].in {
 .cycle-core span {
   font: 12px var(--mono);
   color: var(--muted);
-}
-
-/* ============ AI ============ */
-.ai-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-.ai-card {
-  padding: 24px;
-  overflow: hidden;
-}
-.ai-card::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent-2), transparent);
-  transform: translateX(-100%);
-  transition: transform 0.8s var(--ease);
-}
-.ai-card:hover::after {
-  transform: translateX(100%);
-}
-.ai-card:hover {
-  transform: translateY(-4px);
-}
-.ai-idx {
-  font: 12px var(--mono);
-  color: var(--accent-2);
-}
-.ai-card h3 {
-  font-size: 19px;
-  margin: 10px 0 8px;
-}
-.ai-card p {
-  margin: 0;
-  font-size: 14.5px;
-  color: var(--muted);
-}
-.ai-learning {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 28px 0 0;
-  font: 13px var(--mono);
-  color: var(--muted);
-}
-.ai-learning .live {
-  flex: none;
 }
 
 /* ============ Roadmap ============ */
@@ -2087,51 +2004,10 @@ html.js [data-reveal].in {
 }
 
 /* ============ Education ============ */
-.edu {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-.edu-card {
-  padding: 28px;
-}
-.edu-card h3 {
-  font-size: 26px;
-  margin: 8px 0 4px;
-}
-.edu-card p {
-  margin: 0;
-  color: var(--muted);
-}
-.certs {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.certs li {
-  display: grid;
-  grid-template-columns: 52px 1fr;
-  gap: 2px 12px;
-  padding: 16px 18px;
-  border-radius: 14px;
-}
 .cert-year {
-  grid-row: span 2;
   font: 12px var(--mono);
   color: var(--accent);
   padding-top: 3px;
-}
-.cert-name {
-  font-size: 14.5px;
-  font-weight: 500;
-}
-.cert-by {
-  font-size: 13px;
-  color: var(--faint);
 }
 
 /* ============ Contact / footer ============ */
@@ -2532,12 +2408,6 @@ html.js [data-reveal].in {
   .stack-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .ai-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .approach {
-    grid-template-columns: 1fr;
-  }
 }
 @media (max-width: 900px) {
   .hero,
@@ -2624,11 +2494,7 @@ html.js [data-reveal].in {
   .menu-btn {
     display: block;
   }
-  .ai-grid,
-  .approach-grid,
-  .growth,
-  .edu,
-  .certs {
+  .growth {
     grid-template-columns: 1fr;
   }
   .wave-names {
@@ -2704,8 +2570,7 @@ html.js [data-reveal].in {
 .swatch-circuit { background: linear-gradient(135deg, #e8b888, #71d6ba); }
 [data-theme="circuit"] .eyebrow { border-radius: 4px; }
 [data-theme="circuit"] .btn { border-radius: 6px; }
-[data-theme="circuit"] .card, [data-theme="circuit"] .stack-card,
-[data-theme="circuit"] .edu-card { border-radius: 8px; }
+[data-theme="circuit"] .card, [data-theme="circuit"] .stack-card { border-radius: 8px; }
 .atlas { min-width: 0; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--bg-2); box-shadow: var(--shadow); overflow: hidden; }
 .atlas-toolbar, .atlas-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 22px; font: 10px var(--mono); letter-spacing: .09em; color: var(--muted); }
 .atlas-toolbar { border-bottom: 1px solid var(--line); }

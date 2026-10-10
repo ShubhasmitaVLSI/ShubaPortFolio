@@ -10,9 +10,8 @@ export const phases = [
   { id: "schema", phase: "reset_phase", label: "Career schema" },
   { id: "experience", phase: "configure_phase", label: "Timeline" },
   { id: "stack", phase: "main_phase", label: "Skill hierarchy" },
-  { id: "approach", phase: "shutdown_phase", label: "Approach" },
+  { id: "approach", phase: "shutdown_phase", label: "Engineering notebook" },
   { id: "glossary", phase: "extract_phase", label: "Glossary" },
-  { id: "ai", phase: "check_phase", label: "AI for VLSI" },
   { id: "roadmap", phase: "report_phase", label: "Roadmap" },
   { id: "contact", phase: "final_phase", label: "Contact" },
 ] as const;

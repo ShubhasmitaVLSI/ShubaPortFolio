@@ -61,10 +61,8 @@ export const sectionContexts: Record<string, SectionContext> = {
   schema: { label: "the career schema", hint: "the ER diagram of the career (engineer, employer, projects, skills, flows, education, certifications, goals)", questions: ["Which verification flows are covered?"] },
   experience: { label: "the timeline", hint: "the experience and education timeline", questions: [`What does ${first} do at Synopsys?`] },
   stack: { label: "the skill hierarchy", hint: "the UVM-style skill tree", questions: [`Which EDA tools does ${first} use?`] },
-  approach: { label: "the engineering approach", hint: "the engineering approach section", questions: [`How does ${first} approach debug?`] },
-  ai: { label: "the AI-for-VLSI track", hint: "the AI-assisted VLSI section", questions: [`How does ${first} use AI in verification?`] },
+  approach: { label: "the engineering notebook", hint: "the engineering notebook: approach, AI-assisted VLSI, education and certifications", questions: [`How does ${first} approach debug?`, `How does ${first} use AI in verification?`] },
   roadmap: { label: "the roadmap", hint: "the career roadmap", questions: [`What is ${first} learning next?`] },
-  education: { label: "education", hint: "education and certifications", questions: [`Where did ${first} study?`] },
   contact: { label: "contact", hint: "the contact section", questions: [`How can I reach ${first}?`] },
   projects: { label: "the project archive", hint: "the full project archive page", questions: ["Which project involved emulation?"] },
 };

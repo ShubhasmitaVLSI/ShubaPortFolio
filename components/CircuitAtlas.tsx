@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { profile, projects } from "@/lib/data";
 
-const nodes = [
+export const capabilityNodes = [
   { label: "IP VERIFICATION", x: 0, y: 0 },
   { label: "SOC VERIFICATION", x: 2, y: 0 },
   { label: "GATE-LEVEL SIM", x: 0, y: 2 },
@@ -25,7 +25,7 @@ export default function CircuitAtlas({ compact = false }: { compact?: boolean })
           ].map((d, i) => <g key={d} className={selected === i ? "wire-selected" : ""}><path d={d} /><path className="wire-signal" d={d} style={{ animationDelay: `${i * -.8}s` }} /></g>)}
         </svg>
         <div className="atlas-core"><span className="core-orbit" /><span className="atlas-key">PRIMARY ENTITY</span><strong>SS<span> / DV</span></strong><small>{profile.first} {profile.last}</small><span className="core-caption">Design Verification Engineer</span></div>
-        {nodes.map((node, i) => (
+        {capabilityNodes.map((node, i) => (
           <button key={node.label} className={`atlas-node ${selected === i ? "selected" : ""}`} style={{ gridColumn: node.x + 1, gridRow: node.y + 1 }} aria-pressed={selected === i} aria-controls={compact ? "hero-atlas-detail" : "atlas-detail"} onClick={() => setSelected(i)}>
             <span className="node-relation">capability <span>{String(i + 1).padStart(2, "0")}</span></span>
             <strong><span className="node-port" />{node.label}</strong>

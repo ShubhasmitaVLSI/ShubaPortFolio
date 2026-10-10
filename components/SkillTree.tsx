@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { skillTree } from "@/lib/structure";
-import { projects } from "@/lib/data";
+import { focusOn, onFocus, ping, projectsForSkill } from "@/lib/links";
 
 // Logical canvas; the tree is laid out in these units and scaled to fit.
 const W = 1000;
@@ -20,20 +20,24 @@ function curve(x1: number, y1: number, x2: number, y2: number) {
   return `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
 }
 
-function related(name: string) {
-  const key = name.toLowerCase().split(/[\s/·×]+/)[0];
-  if (key.length < 3) return [];
-  return projects.filter((p) => `${p.title} ${p.detail} ${p.tags.join(" ")}`.toLowerCase().includes(key));
-}
-
 export default function SkillTree() {
   const { root, branches } = skillTree;
   const [open, setOpen] = useState<boolean[]>(() => branches.map(() => true));
   const [sel, setSel] = useState<Sel>({ b: 2, l: 2 });
+  // Hover previews a leaf; a click pins it so the inspector's links stay reachable.
+  const [pinned, setPinned] = useState(false);
+  const preview = (s: Sel) => {
+    if (!pinned) setSel(s);
+  };
+  const pin = (s: Sel) => {
+    setPinned(true);
+    setSel(s);
+  };
   const [scale, setScale] = useState(1);
   const [grown, setGrown] = useState(false);
   const [settled, setSettled] = useState(false);
   const wrap = useRef<HTMLDivElement>(null);
+  const treeRef = useRef<HTMLDivElement>(null);
 
   // Layout: leaves stack per open branch; a closed branch takes one slot.
   const layout = useMemo(() => {
@@ -77,14 +81,32 @@ export default function SkillTree() {
     };
   }, []);
 
+  // Another view asked for a skill: open its branch, select it and flash it.
+  useEffect(
+    () =>
+      onFocus((t) => {
+        if (t.kind !== "skill") return;
+        const bi = branches.findIndex((b) => b.leaves.some((l) => l.name === t.name));
+        if (bi < 0) return;
+        const li = branches[bi].leaves.findIndex((l) => l.name === t.name);
+        setOpen((o) => o.map((v, i) => (i === bi ? true : v)));
+        pin({ b: bi, l: li });
+        window.setTimeout(() => {
+          const hits = treeRef.current?.querySelectorAll<HTMLElement>(`[data-leaf="${bi}-${li}"]`) ?? [];
+          ping([...hits].find((el) => el.offsetParent !== null));
+        }, 60);
+      }),
+    [branches]
+  );
+
   const toggle = (bi: number) => setOpen((o) => o.map((v, i) => (i === bi ? !v : v)));
   const active = branches[sel.b];
   const leaf = active.leaves[sel.l];
-  const rel = related(leaf.name);
+  const rel = projectsForSkill(leaf.name);
   const { bs, H, rootY } = layout;
 
   return (
-    <div className={`tree ${grown ? "grown" : ""} ${settled ? "settled" : ""}`}>
+    <div className={`tree ${grown ? "grown" : ""} ${settled ? "settled" : ""}`} ref={treeRef}>
       {/* Desktop: component hierarchy canvas */}
       <div className="tree-canvas" ref={wrap} style={{ height: H * scale }}>
         <div className="tree-stage" style={{ width: W, height: H, transform: `scale(${scale})` }}>
@@ -149,6 +171,7 @@ export default function SkillTree() {
               {b.leaves.map((l, li) => (
                 <button
                   key={l.name}
+                  data-leaf={`${bi}-${li}`}
                   className={`tn leaf ${sel.b === bi && sel.l === li ? "on" : ""} ${open[bi] ? "" : "gone"}`}
                   style={{
                     left: LF.x,
@@ -159,9 +182,9 @@ export default function SkillTree() {
                   } as React.CSSProperties}
                   tabIndex={open[bi] ? 0 : -1}
                   aria-hidden={!open[bi]}
-                  onMouseEnter={() => setSel({ b: bi, l: li })}
-                  onFocus={() => setSel({ b: bi, l: li })}
-                  onClick={() => setSel({ b: bi, l: li })}
+                  onMouseEnter={() => preview({ b: bi, l: li })}
+                  onFocus={() => pin({ b: bi, l: li })}
+                  onClick={() => pin({ b: bi, l: li })}
                 >
                   <i aria-hidden="true" />
                   {l.name}
@@ -190,8 +213,9 @@ export default function SkillTree() {
                   {b.leaves.map((l, li) => (
                     <li key={l.name} role="treeitem">
                       <button
+                        data-leaf={`${bi}-${li}`}
                         className={`tl-leaf ${sel.b === bi && sel.l === li ? "on" : ""}`}
-                        onClick={() => setSel({ b: bi, l: li })}
+                        onClick={() => pin({ b: bi, l: li })}
                       >
                         {l.name}
                       </button>
@@ -207,7 +231,7 @@ export default function SkillTree() {
       <div className="inspector" aria-live="polite">
         <div className="inspector-bar">
           <span>
-            <i className="dot g" /> inspector
+            <i className="dot g" /> inspector{pinned && <small className="inspector-pin">· pinned, click another leaf to inspect it</small>}
           </span>
           <code key={`${sel.b}-${sel.l}`} className="inspector-path">
             {root.inst}.{active.inst}.{leaf.name.toLowerCase().replace(/[^a-z0-9]+/g, "_")}
@@ -219,16 +243,21 @@ export default function SkillTree() {
             <h3>{leaf.name}</h3>
             <p>{leaf.note}</p>
           </div>
-          {rel.length > 0 && (
-            <div className="inspector-rel">
-              <p className="inspector-kind">Seen in</p>
-              {rel.slice(0, 3).map((p) => (
-                <span className="tag" key={p.id}>
-                  {p.id} · {p.title}
-                </span>
-              ))}
-            </div>
-          )}
+          <div className="inspector-rel">
+            {rel.length > 0 && (
+              <>
+                <p className="inspector-kind">Seen in · open case file</p>
+                {rel.slice(0, 3).map((p) => (
+                  <button className="tag link" key={p.id} onClick={() => focusOn({ kind: "project", id: p.id })}>
+                    {p.id} · {p.title}
+                  </button>
+                ))}
+              </>
+            )}
+            <button className="inspector-query" onClick={() => focusOn({ kind: "entity", id: "skill", row: leaf.name })}>
+              sql&gt; find in career.db →
+            </button>
+          </div>
         </div>
       </div>
     </div>

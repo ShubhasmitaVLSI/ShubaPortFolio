@@ -2,19 +2,23 @@
 
 import { useEffect, useRef, useState } from "react";
 import { projects, type Project } from "@/lib/data";
+import { focusOn, onFocus, skillForTag } from "@/lib/links";
 
 function Modal({ p, onClose }: { p: Project; onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
     closeRef.current?.focus();
     const key = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
-      // The close button is the dialog's only interactive element.
-      if (e.key === "Tab") {
+      // Keep Tab cycling inside the dialog.
+      if (e.key === "Tab" && dialogRef.current) {
+        const items = [...dialogRef.current.querySelectorAll<HTMLElement>("button")];
+        const i = items.indexOf(document.activeElement as HTMLElement);
         e.preventDefault();
-        closeRef.current?.focus();
+        items[(i + (e.shiftKey ? -1 : 1) + items.length) % items.length]?.focus();
       }
     };
     document.addEventListener("keydown", key);
@@ -23,7 +27,8 @@ function Modal({ p, onClose }: { p: Project; onClose: () => void }) {
     return () => {
       document.removeEventListener("keydown", key);
       document.body.style.overflow = previousOverflow;
-      prev?.focus();
+      // No scroll: a tag link may be taking the visitor somewhere else.
+      prev?.focus({ preventScroll: true });
     };
   }, [onClose]);
 
@@ -31,6 +36,7 @@ function Modal({ p, onClose }: { p: Project; onClose: () => void }) {
     <div className="modal-backdrop" onClick={onClose}>
       <div
         className="modal"
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
@@ -60,11 +66,23 @@ function Modal({ p, onClose }: { p: Project; onClose: () => void }) {
           ))}
         </ul>
         <div className="tags">
-          {p.tags.map((t) => (
-            <span className="tag" key={t}>
-              {t}
-            </span>
-          ))}
+          {p.tags.map((t) => {
+            const skill = skillForTag(t);
+            if (!skill) return <span className="tag" key={t}>{t}</span>;
+            return (
+              <button
+                className="tag link"
+                key={t}
+                title="Show in the skill tree"
+                onClick={() => {
+                  onClose();
+                  window.setTimeout(() => focusOn({ kind: "skill", name: skill.name }), 0);
+                }}
+              >
+                {t}
+              </button>
+            );
+          })}
         </div>
         <p className="modal-note">Details generalized to protect confidential design, process and program information.</p>
       </div>
@@ -90,6 +108,15 @@ export default function Work() {
       window.removeEventListener("resize", on);
     };
   }, []);
+
+  useEffect(
+    () =>
+      onFocus((t) => {
+        const p = t.kind === "project" && projects.find((x) => x.id === t.id);
+        if (p) setOpen(p);
+      }),
+    []
+  );
 
   const nudge = (dir: 1 | -1) => {
     const el = rail.current;

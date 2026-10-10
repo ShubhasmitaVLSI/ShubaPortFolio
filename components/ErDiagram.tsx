@@ -1,13 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { schema, type Entity } from "@/lib/structure";
+import { schema, schemaTour, type Entity } from "@/lib/structure";
+import { focusOn, onFocus } from "@/lib/links";
+import Collapse from "./Collapse";
 
 type Pos = Record<string, { x: number; y: number }>;
 type Size = Record<string, { w: number; h: number }>;
 
 const initial = (): Pos => Object.fromEntries(schema.entities.map((e) => [e.id, { x: e.x, y: e.y }]));
 const byId = Object.fromEntries(schema.entities.map((e) => [e.id, e])) as Record<string, Entity>;
+const DWELL = 1700;
 
 function connector(a: { x: number; y: number; w: number; h: number }, b: { x: number; y: number; w: number; h: number }) {
   const acx = a.x + a.w / 2,
@@ -37,33 +40,69 @@ function connector(a: { x: number; y: number; w: number; h: number }, b: { x: nu
   return { d, mid };
 }
 
-function Console({ entity }: { entity: Entity }) {
-  const sql = `SELECT * FROM ${entity.label.toLowerCase()};`;
+// Rows in these tables lead somewhere else on the page.
+const rowLink: Record<string, { hint: string; go: (r: Record<string, string>) => void }> = {
+  project: { hint: "click a row to open its case file", go: (r) => focusOn({ kind: "project", id: r.project_id }) },
+  skill: { hint: "click a row to find it in the skill tree", go: (r) => focusOn({ kind: "skill", name: r.name }) },
+};
+
+function Console({
+  entity,
+  sql,
+  cols,
+  highlight,
+  onDone,
+}: {
+  entity: Entity;
+  sql: string;
+  cols: string[];
+  highlight: string | null;
+  onDone?: () => void;
+}) {
   const [typed, setTyped] = useState("");
   const [done, setDone] = useState(false);
+  const doneRef = useRef(onDone);
+  const wrap = useRef<HTMLDivElement>(null);
+  doneRef.current = onDone;
 
   useEffect(() => {
+    const finish = () => {
+      setDone(true);
+      doneRef.current?.();
+    };
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setTyped(sql);
-      setDone(true);
+      finish();
       return;
     }
     setTyped("");
     setDone(false);
     let i = 0;
-    let finish = 0;
+    let end = 0;
+    // Long joins type faster so every query takes about the same time.
+    const speed = Math.max(9, Math.min(28, 1500 / sql.length));
     const t = window.setInterval(() => {
       i++;
       setTyped(sql.slice(0, i));
       if (i >= sql.length) {
         clearInterval(t);
-        finish = window.setTimeout(() => setDone(true), 180);
+        end = window.setTimeout(finish, 180);
       }
-    }, 28);
-    return () => { clearInterval(t); clearTimeout(finish); };
+    }, speed);
+    return () => {
+      clearInterval(t);
+      clearTimeout(end);
+    };
   }, [sql]);
 
-  const cols = entity.fields.map((f) => f.name);
+  useEffect(() => {
+    if (!done || !highlight) return;
+    const row = wrap.current?.querySelector<HTMLElement>("tr.hit");
+    const box = wrap.current;
+    if (row && box) box.scrollTop = row.offsetTop - box.clientHeight / 2;
+  }, [done, highlight, entity.id]);
+
+  const link = rowLink[entity.id];
   return (
     <div className="sql">
       <div className="terminal-bar">
@@ -80,7 +119,7 @@ function Console({ entity }: { entity: Entity }) {
         </div>
         {done && (
           <>
-            <div className="sql-table-wrap">
+            <div className="sql-table-wrap" ref={wrap}>
               <table className="sql-table">
                 <thead>
                   <tr>
@@ -91,7 +130,23 @@ function Console({ entity }: { entity: Entity }) {
                 </thead>
                 <tbody>
                   {entity.rows.map((r, i) => (
-                    <tr key={i} style={{ animationDelay: `${i * 55}ms` }}>
+                    <tr
+                      key={i}
+                      style={{ animationDelay: `${Math.min(i, 12) * 55}ms` }}
+                      className={`${link ? "linkable" : ""} ${highlight && r.name === highlight ? "hit" : ""}`}
+                      tabIndex={link ? 0 : undefined}
+                      onClick={link ? () => link.go(r) : undefined}
+                      onKeyDown={
+                        link
+                          ? (k) => {
+                              if (k.key === "Enter" || k.key === " ") {
+                                k.preventDefault();
+                                link.go(r);
+                              }
+                            }
+                          : undefined
+                      }
+                    >
                       {cols.map((c) => (
                         <td key={c}>{r[c] ?? "—"}</td>
                       ))}
@@ -101,7 +156,7 @@ function Console({ entity }: { entity: Entity }) {
               </table>
             </div>
             <div className="sql-foot">
-              ({entity.rows.length} row{entity.rows.length === 1 ? "" : "s"}) · click another table to query it
+              ({entity.rows.length} row{entity.rows.length === 1 ? "" : "s"}) · {link ? link.hint : "click another table to query it"}
             </div>
           </>
         )}
@@ -117,9 +172,17 @@ export default function ErDiagram() {
   const [selected, setSelected] = useState("engineer");
   const [scale, setScale] = useState(1);
   const [shown, setShown] = useState(false);
+  const [step, setStep] = useState<number | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const [highlight, setHighlight] = useState<string | null>(null);
+  const [openCard, setOpenCard] = useState<string | null>("engineer");
+  // Bumped on every play so the console retypes even when the query is unchanged.
+  const [run, setRun] = useState(0);
+  const root = useRef<HTMLDivElement>(null);
   const wrap = useRef<HTMLDivElement>(null);
   const cards = useRef<Record<string, HTMLDivElement | null>>({});
   const drag = useRef<{ id: string; sx: number; sy: number; ox: number; oy: number; moved: boolean } | null>(null);
+  const timer = useRef(0);
 
   const measure = useCallback(() => {
     const s: Size = {};
@@ -153,8 +216,58 @@ export default function ErDiagram() {
     return () => {
       ro.disconnect();
       io.disconnect();
+      clearTimeout(timer.current);
     };
   }, [measure]);
+
+  // Leaving the tour keeps whichever table it was showing.
+  const stopTour = () => {
+    clearTimeout(timer.current);
+    if (step !== null) setSelected(schemaTour[step].id);
+    setPlaying(false);
+    setStep(null);
+  };
+  const choose = (id: string, row: string | null = null) => {
+    stopTour();
+    setSelected(id);
+    setOpenCard(id);
+    setHighlight(row);
+  };
+  const play = () => {
+    clearTimeout(timer.current);
+    setHighlight(null);
+    setPlaying(true);
+    setRun((n) => n + 1);
+    setStep(0);
+    setOpenCard(schemaTour[0].id);
+  };
+  const goStep = (i: number) => {
+    clearTimeout(timer.current);
+    setPlaying(false);
+    setHighlight(null);
+    setStep(i);
+    setOpenCard(schemaTour[i].id);
+  };
+  // Each step waits for its query to finish typing, then lingers on the result.
+  const onQueryDone = () => {
+    if (!playing || step === null) return;
+    timer.current = window.setTimeout(() => {
+      if (step < schemaTour.length - 1) {
+        setStep(step + 1);
+        setOpenCard(schemaTour[step + 1].id);
+      } else setPlaying(false);
+    }, DWELL);
+  };
+
+  useEffect(
+    () =>
+      onFocus((t) => {
+        if (t.kind !== "entity" || !byId[t.id]) return;
+        choose(t.id, t.row ?? null);
+        root.current?.scrollIntoView({ block: "start" });
+      }),
+    []
+  );
 
   const onDown = (id: string) => (e: React.PointerEvent) => {
     if (e.button !== 0) return;
@@ -180,18 +293,26 @@ export default function ErDiagram() {
   const onUp = () => {
     const d = drag.current;
     drag.current = null;
-    if (d && !d.moved) setSelected(d.id);
+    if (d && !d.moved) choose(d.id);
   };
 
+  const touring = step !== null;
+  const tourStep = touring ? schemaTour[step] : null;
+  const current = tourStep ? tourStep.id : selected;
+  // During the tour, the path walked so far stays lit and everything else fades.
+  const trail = touring ? new Set(schemaTour.slice(0, step + 1).map((s) => s.id).concat("engineer")) : null;
+  const trailVerbs = touring ? new Set(schemaTour.slice(1, step + 1).map((s) => s.verb)) : null;
+
   const linked = (id: string) =>
-    new Set(
-      schema.relations.flatMap((r) => (r.from === id || r.to === id ? [r.from, r.to] : []))
-    );
-  const focus = hover ? linked(hover) : null;
+    new Set(schema.relations.flatMap((r) => (r.from === id || r.to === id ? [r.from, r.to] : [])));
+  const focus = hover && !touring ? linked(hover) : trail;
   const ready = Object.keys(size).length === schema.entities.length;
+  const entity = byId[current];
+  const sql = tourStep?.sql ?? `SELECT * FROM ${entity.label.toLowerCase()};`;
+  const cols = tourStep?.cols ?? entity.fields.map((f) => f.name);
 
   return (
-    <div className={`er ${shown ? "shown" : ""}`}>
+    <div className={`er ${shown ? "shown" : ""} ${touring ? "touring" : ""}`} ref={root}>
       <div className="er-toolbar">
         <span className="er-legend">
           <svg width="34" height="14" aria-hidden="true">
@@ -209,6 +330,22 @@ export default function ErDiagram() {
         <button className="er-reset" onClick={() => setPos(initial())}>
           ↺ Reset layout
         </button>
+      </div>
+
+      <div className="er-path" aria-label="Join path">
+        <button className={`er-play ${playing ? "on" : ""}`} onClick={playing ? stopTour : play}>
+          {playing ? "■ Stop" : touring ? "↻ Replay the flow" : "▶ Play the flow"}
+        </button>
+        <ol>
+          {schemaTour.map((s, i) => (
+            <li key={s.id} className={`${step === i ? "on" : ""} ${step !== null && i < step ? "done" : ""}`}>
+              {s.verb && <span className="er-path-verb">{s.verb}</span>}
+              <button onClick={() => goStep(i)} aria-current={step === i ? "step" : undefined}>
+                {byId[s.id].label}
+              </button>
+            </li>
+          ))}
+        </ol>
       </div>
 
       <div className="er-scroll" ref={wrap}>
@@ -238,10 +375,15 @@ export default function ErDiagram() {
                   const a = { ...pos[r.from], ...size[r.from] };
                   const b = { ...pos[r.to], ...size[r.to] };
                   const { d, mid } = connector(a, b);
-                  const hot = hover ? r.from === hover || r.to === hover : selected === r.from || selected === r.to;
+                  const live = tourStep?.verb === r.verb;
+                  const hot = touring
+                    ? trailVerbs!.has(r.verb)
+                    : hover
+                      ? r.from === hover || r.to === hover
+                      : selected === r.from || selected === r.to;
                   const k = hot ? "hot" : "base";
                   return (
-                    <g key={`${r.from}-${r.to}`} className={`rel ${hot ? "hot" : ""} ${focus && !hot ? "dim" : ""}`}>
+                    <g key={`${r.from}-${r.to}`} className={`rel ${hot ? "hot" : ""} ${live ? "live" : ""} ${focus && !hot ? "dim" : ""}`}>
                       <path
                         d={d}
                         className="rel-line"
@@ -251,6 +393,11 @@ export default function ErDiagram() {
                         style={{ animationDelay: `${0.5 + i * 0.09}s` }}
                       />
                       <path d={d} className="rel-flow" />
+                      {live && (
+                        <circle r={5} className="rel-packet">
+                          <animateMotion dur="1.4s" repeatCount="indefinite" path={d} />
+                        </circle>
+                      )}
                       <g transform={`translate(${mid.x},${mid.y})`} className="rel-tag">
                         <rect x={-r.verb.length * 3.6 - 10} y={-10} width={r.verb.length * 7.2 + 20} height={20} rx={10} />
                         <text textAnchor="middle" y={4}>
@@ -270,7 +417,7 @@ export default function ErDiagram() {
                   ref={(el) => {
                     cards.current[e.id] = el;
                   }}
-                  className={`ent hue-${e.hue} ${selected === e.id ? "sel" : ""} ${hover === e.id ? "hov" : ""} ${dim ? "dim" : ""}`}
+                  className={`ent hue-${e.hue} ${current === e.id ? "sel" : ""} ${hover === e.id ? "hov" : ""} ${dim ? "dim" : ""}`}
                   style={{ left: pos[e.id].x, top: pos[e.id].y, animationDelay: `${i * 90}ms` }}
                   onPointerEnter={() => setHover(e.id)}
                   onPointerLeave={() => setHover(null)}
@@ -284,7 +431,7 @@ export default function ErDiagram() {
                     onKeyDown={(k) => {
                       if (k.key === "Enter" || k.key === " ") {
                         k.preventDefault();
-                        setSelected(e.id);
+                        choose(e.id);
                       }
                     }}
                   >
@@ -310,7 +457,68 @@ export default function ErDiagram() {
         </div>
       </div>
 
-      <Console entity={byId[selected]} />
+      {/* Phones: the same schema as collapsible table cards with their joins */}
+      <ul className="er-cards">
+        {schema.entities.map((e) => {
+          const open = openCard === e.id;
+          const rels = schema.relations.filter((r) => r.from === e.id || r.to === e.id);
+          return (
+            <li
+              key={e.id}
+              id={`erc-${e.id}`}
+              className={`erc hue-${e.hue} ${current === e.id ? "sel" : ""} ${trail && !trail.has(e.id) ? "dim" : ""}`}
+            >
+              <button
+                className="erc-head"
+                id={`erc-h-${e.id}`}
+                aria-expanded={open}
+                aria-controls={`erc-b-${e.id}`}
+                onClick={() => {
+                  if (open && current === e.id) setOpenCard(null);
+                  else choose(e.id);
+                }}
+              >
+                <span className="erc-caret" aria-hidden="true">
+                  ▸
+                </span>
+                {e.label}
+                <span className="ent-rows">{e.rows.length}</span>
+              </button>
+              <Collapse open={open} id={`erc-b-${e.id}`} labelledBy={`erc-h-${e.id}`}>
+                <ul className="erc-fields">
+                  {e.fields.map((f) => (
+                    <li key={f.name}>
+                      <span className={`key ${f.key ?? ""}`}>{f.key ?? ""}</span>
+                      <span className="fname">{f.name}</span>
+                      <span className="ftype">{f.type}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Collapse>
+              <div className="erc-rels">
+                {rels.map((r) => {
+                  const out = r.from === e.id;
+                  const other = byId[out ? r.to : r.from];
+                  return (
+                    <button
+                      key={r.verb}
+                      className={`erc-rel ${tourStep?.verb === r.verb ? "live" : ""}`}
+                      onClick={() => {
+                        choose(other.id);
+                        document.getElementById(`erc-${other.id}`)?.scrollIntoView({ block: "nearest" });
+                      }}
+                    >
+                      {out ? `${r.verb} → ${other.label}` : `← ${r.verb} · ${other.label}`}
+                    </button>
+                  );
+                })}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+
+      <Console key={run} entity={entity} sql={sql} cols={cols} highlight={touring ? null : highlight} onDone={onQueryDone} />
     </div>
   );
 }
