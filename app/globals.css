@@ -867,6 +867,13 @@ html.js [data-reveal].in {
   font-size: clamp(16px, 1.5vw, 18px);
   color: var(--muted);
 }
+.hero-title {
+  margin: 0 0 12px;
+  color: var(--ink);
+  font-size: clamp(16px, 1.5vw, 20px);
+  font-weight: 600;
+  line-height: 1.5;
+}
 .hero-actions {
   display: flex;
   flex-wrap: wrap;

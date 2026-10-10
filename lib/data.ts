@@ -12,7 +12,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/shubhasmitavlsi",
   booking: "/book",
   tagline:
-    "IP and SoC verification, timing-aware validation, GLS-SDF, FIFO verification, assertions, coverage closure, emulation support and debug that holds up on silicon.",
+    "IP and SoC design verification with SystemVerilog, UVM and SVA. Focused on functional and code coverage closure, FIFO verification, SDF back-annotated gate-level simulation, power-aware checks and root-cause debug.",
 };
 
 export const marquee = [

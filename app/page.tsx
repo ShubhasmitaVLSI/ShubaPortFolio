@@ -50,8 +50,8 @@ export default function Home() {
         <Section
           id="impact"
           kicker={<Kicker id="impact">Verification summary</Kicker>}
-          title={<>Verification that <em>holds</em> on silicon.</>}
-          aside={<p>From RTL to back-annotated netlists, each layer closes a different class of risk before tape-out.</p>}
+          title={<>Verification scope, <em>from RTL to netlist.</em></>}
+          aside={<p>Functional verification, assertions, coverage analysis and timing-aware simulation address different risks before tape-out.</p>}
         >
           <Metrics />
         </Section>
@@ -80,7 +80,7 @@ export default function Home() {
         <Section
           id="schema"
           kicker={<Kicker id="schema">Career schema</Kicker>}
-          title={<>A career, <em>normalized</em>.</>}
+          title={<>How experience connects to <em>verification expertise.</em></>}
           aside={
             <p>
               The same story as an entity-relationship model: one engineer, the employer, projects, skills, verification
@@ -103,7 +103,7 @@ export default function Home() {
         <Section
           id="stack"
           kicker={<Kicker id="stack">Skill hierarchy</Kicker>}
-          title={<>Instantiated like a <em>testbench</em>.</>}
+          title={<>SystemVerilog, UVM and <em>verification methodology.</em></>}
           aside={
             <p>
               Skills arranged as a UVM component tree. Click a branch to collapse it, hover a leaf to preview it and click to pin it;
@@ -118,7 +118,7 @@ export default function Home() {
         <Section
           id="approach"
           kicker={<Kicker id="approach">Engineering notebook</Kicker>}
-          title={<>Every technique covers a <em>different</em> risk.</>}
+          title={<>Test planning, coverage closure and <em>root-cause debug.</em></>}
           aside={
             <p>
               How the work gets done, where AI fits in, and how the learning keeps going. Switch chapters and open a row;
@@ -132,7 +132,7 @@ export default function Home() {
         <Section
           id="glossary"
           kicker={<Kicker id="glossary">DV glossary</Kicker>}
-          title={<>Speak <em>verification</em>.</>}
+          title={<>Design verification <em>terminology.</em></>}
           aside={
             <p>
               The vocabulary behind the work, in plain language. Flip a card to see the definition and where it shows up

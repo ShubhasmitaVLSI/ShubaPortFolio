@@ -78,8 +78,10 @@ export default function Hero() {
             ))}
           </span>
         </h1>
+        <p className="hero-title reveal d2">{profile.role} · {profile.title}</p>
         <p className="role reveal d2">
-          <span className="role-prefix">&gt;</span> {role}
+          <span className="sr-only">{profile.role}</span>
+          <span aria-hidden="true"><span className="role-prefix">&gt;</span> {role}</span>
           <i className="caret thin" />
         </p>
         <p className="lede reveal d2">{profile.tagline}</p>
