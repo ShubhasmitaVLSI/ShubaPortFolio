@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { STATIC_COMMANDS, postCommands, score, type Command, type CommandGroup, type SearchPost } from "@/lib/command-index";
+import { STATIC_COMMANDS, postCommands, score, termCommands, type Command, type CommandGroup, type SearchPost, type SearchTerm } from "@/lib/command-index";
 
 const OPEN_EVENT = "dv:palette";
 const GROUP_ORDER: CommandGroup[] = ["Pages", "Sections", "Lexicon", "Blog", "Glossary", "Actions"];
@@ -35,7 +35,8 @@ export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
-  const [posts, setPosts] = useState<Command[] | null>(null);
+  // Lexicon entries and blog posts, fetched on first open.
+  const [remote, setRemote] = useState<Command[] | null>(null);
 
   useEffect(() => {
     const show = () => setOpen(true);
@@ -61,25 +62,25 @@ export function CommandPalette() {
       setQuery("");
       setActive(0);
       input.current?.focus();
-      // Posts are fetched once, on first open; the palette still works if this fails.
-      if (!posts)
+      // Fetched once, on first open; the palette still works if this fails.
+      if (!remote)
         fetch("/api/search")
-          .then((r) => (r.ok ? r.json() : { posts: [] }))
-          .then((j: { posts: SearchPost[] }) => setPosts(postCommands(j.posts)))
-          .catch(() => setPosts([]));
+          .then((r) => (r.ok ? r.json() : { posts: [], terms: [] }))
+          .then((j: { posts: SearchPost[]; terms?: SearchTerm[] }) => setRemote([...termCommands(j.terms ?? []), ...postCommands(j.posts)]))
+          .catch(() => setRemote([]));
     }
     if (!open && d.open) d.close();
-  }, [open, posts]);
+  }, [open, remote]);
 
   // Empty query: a short suggested list plus the latest posts. Otherwise ranked
   // matches, grouped in a fixed order. `flat` is the keyboard order.
   const groups = useMemo(() => {
-    const all = [...STATIC_COMMANDS, ...(posts ?? [])];
+    const all = [...STATIC_COMMANDS, ...(remote ?? [])];
     if (!query.trim()) {
       const picks = SUGGESTED.map((id) => all.find((c) => c.id === id)).filter((c): c is Command => Boolean(c));
       return [
         { label: "Suggested", items: picks },
-        { label: "Latest posts", items: (posts ?? []).slice(0, 3) },
+        { label: "Latest posts", items: (remote ?? []).filter((c) => c.group === "Blog").slice(0, 3) },
       ].filter((x) => x.items.length);
     }
     const ranked = all
@@ -89,7 +90,7 @@ export function CommandPalette() {
       .slice(0, 12)
       .map((r) => r.c);
     return GROUP_ORDER.map((g) => ({ label: g as string, items: ranked.filter((c) => c.group === g) })).filter((x) => x.items.length);
-  }, [query, posts]);
+  }, [query, remote]);
   const flat = groups.flatMap((x) => x.items);
 
   useEffect(() => setActive(0), [query]);

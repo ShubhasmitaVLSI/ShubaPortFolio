@@ -820,6 +820,166 @@ a:hover .read-more span {
   font-style: italic;
 }
 
+/* Flowcharts from ```mermaid blocks (lib/flow.ts) */
+.prose .flow {
+  margin: 0 0 1.3em;
+  padding: 22px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+}
+.flow-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(200px, 0.55fr);
+  gap: 20px;
+  align-items: start;
+}
+.flow-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  justify-items: center;
+}
+.prose .flow-rows li {
+  margin: 0;
+}
+.flow-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+.flow-row.parallel {
+  padding: 8px;
+  border-radius: 14px;
+  border: 1px dashed color-mix(in srgb, var(--accent-2) 45%, transparent);
+}
+.flow-node {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  max-width: 280px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+  background: var(--surface);
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.3;
+}
+.flow-row.parallel .flow-node {
+  flex: 1 1 140px;
+}
+.flow-node strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+.flow-node small {
+  font-size: 12px;
+  color: var(--faint);
+}
+.flow-node.decision {
+  border-color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 10%, var(--surface));
+  border-radius: 999px;
+  padding-inline: 22px;
+}
+.flow-row:last-child .flow-node {
+  border-color: var(--good);
+  background: color-mix(in srgb, var(--good) 10%, var(--surface));
+}
+/* Connector between rows: a line with an arrowhead, and the edge label if any. */
+.flow-link {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 30px;
+  width: 2px;
+  background: linear-gradient(var(--accent), var(--accent-2));
+}
+.flow-link::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  translate: -50% 0;
+  border: 5px solid transparent;
+  border-top-color: var(--accent-2);
+  border-bottom: 0;
+}
+.flow-link span {
+  position: absolute;
+  left: 12px;
+  white-space: nowrap;
+  font: 11px var(--mono);
+  color: var(--good);
+}
+.flow-loops {
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px dashed var(--line-strong);
+}
+.prose .flow-loops p {
+  margin: 0 0 10px;
+  font: 600 11px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+.flow-loops ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.prose .flow-loops li {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.35;
+}
+.flow-loop-path i {
+  font-style: normal;
+  color: var(--accent);
+}
+.flow-loop-why {
+  font: 11.5px var(--mono);
+  color: var(--faint);
+}
+/* Rows light up one after another once the figure is revealed. */
+html.js [data-reveal] .flow-row,
+html.js .pm .flow-row,
+html.js [data-reveal] .flow-link,
+html.js .pm .flow-link {
+  opacity: 0;
+  translate: 0 8px;
+  transition: opacity 0.5s var(--ease), translate 0.5s var(--ease);
+  transition-delay: calc(0.15s + var(--i, 0) * 0.12s);
+}
+html.js .in .flow-row,
+html.js .pm-in .flow-row,
+html.js .in .flow-link,
+html.js .pm-in .flow-link {
+  opacity: 1;
+  translate: 0 0;
+}
+@media (max-width: 760px) {
+  .flow-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media print {
+  html.js .flow-row,
+  html.js .flow-link {
+    opacity: 1 !important;
+    translate: none !important;
+  }
+}
+
 /* Timing diagrams (lib/wave.ts) */
 .prose .wave {
   margin: 0 0 1.3em;

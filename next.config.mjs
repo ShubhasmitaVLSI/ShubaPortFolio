@@ -11,9 +11,9 @@ const nextConfig = (phase) => ({
       { key: "X-Frame-Options", value: "SAMEORIGIN" },
     ] }];
   },
-  // Ship committed posts with the serverless functions that read them.
-  // Every route that lists posts (blog pages, RSS, sitemap, uploads) needs them.
-  outputFileTracingIncludes: { "/**": ["./content/blog/**/*"] },
+  // Ship committed posts and Lexicon entries with the serverless functions that read them.
+  // Every route that lists them (blog, Lexicon, RSS, sitemap, search, uploads) needs them.
+  outputFileTracingIncludes: { "/**": ["./content/blog/**/*", "./content/lexicon/**/*"] },
   // `next dev` writes its own folder, so a running dev server can't overwrite the
   // production build that `next build` / `next start` use. NEXT_DIST_DIR overrides both.
   distDir: process.env.NEXT_DIST_DIR || (phase === PHASE_DEVELOPMENT_SERVER ? ".next-dev" : ".next"),

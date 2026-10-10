@@ -4,6 +4,7 @@
 
 import { isSafeImage, slugify } from "@/lib/blog";
 import { highlight } from "@/lib/highlight";
+import { renderFlow } from "@/lib/flow";
 import { renderWave } from "@/lib/wave";
 
 export type Heading = { id: string; text: string; level: 2 | 3 };
@@ -107,9 +108,9 @@ function blocks(src: string, ctx: Ctx): string {
       while (i < lines.length && !close.test(lines[i])) body.push(lines[i++]);
       i++;
       const lang = fence[2].toLowerCase();
-      const wave = lang === "wave" ? renderWave(body.join("\n")) : null;
+      const drawn = lang === "wave" ? renderWave(body.join("\n")) : lang === "mermaid" ? renderFlow(body.join("\n")) : null;
       out.push(
-        wave ??
+        drawn ??
           `<pre${lang ? ` data-lang="${esc(lang)}"` : ""}><code${lang ? ` class="language-${esc(lang)}"` : ""}>${highlight(body.join("\n"), lang)}</code></pre>`
       );
       continue;

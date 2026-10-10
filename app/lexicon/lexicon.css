@@ -822,9 +822,10 @@ html.js .lex [data-reveal].in .wave svg {
   color: var(--ink);
   transition: border-color 0.2s, background 0.2s, transform 0.2s var(--ease), opacity 0.3s;
 }
+/* Hover glows rather than lifting: a moving button can slide out from under the pointer and flicker. */
 .quiz-opt:hover:not([aria-disabled="true"]) {
   border-color: var(--accent);
-  transform: translateY(-2px);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
 }
 .quiz-opt[aria-disabled="true"] {
   cursor: default;
@@ -1137,6 +1138,179 @@ html.js .lex [data-reveal].in .wave svg {
   color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* ---- Markdown entries (components/lexicon/MarkdownEntry.tsx) ---- */
+.lex-hero .lex-title {
+  font-size: clamp(40px, 6.4vw, 76px);
+  letter-spacing: -0.045em;
+  margin-bottom: 16px;
+  background: linear-gradient(100deg, var(--ink) 40%, var(--accent) 75%, var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.lex-definition {
+  position: relative;
+  margin: 0 0 28px;
+  max-width: 720px;
+  padding: 18px 22px 18px 24px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+  background: linear-gradient(150deg, color-mix(in srgb, var(--accent) 10%, var(--surface)), var(--surface) 70%);
+}
+.lex-definition::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(var(--accent), var(--accent-2));
+}
+.lex-definition span {
+  font: 600 11px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+.lex-definition p {
+  margin: 6px 0 0;
+  font: 500 clamp(17px, 1.8vw, 20px) / 1.5 var(--display);
+  color: var(--ink);
+}
+.lex-tags {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.lex-tags li {
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font: 12px var(--mono);
+  color: var(--faint);
+}
+/* Prose inside entries spans the content column. */
+.lex .lex-prose {
+  max-width: none;
+  font-size: 17px;
+}
+.lex .lex-prose + .lex-prose,
+.lex .lex-qa + .lex-prose,
+.lex .lex-prose + .lex-qa,
+.lex .lex-prose + .quiz {
+  margin-top: 4px;
+}
+.lex .lex-qa {
+  margin: 0 0 1.3em;
+}
+.lex .lex-prose h3 {
+  margin-top: 1.6em;
+}
+.lex .lex-prose > :first-child {
+  margin-top: 0;
+}
+/* Two-column key/value tables come with an empty header row: hide it and label the keys. */
+.lex-prose thead:has(th:first-child:empty):has(th:last-child:empty) {
+  display: none;
+}
+.lex-prose table:has(thead th:first-child:empty) td:first-child {
+  width: 30%;
+  font-weight: 600;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+.lex-prose td code,
+.lex-prose th code {
+  white-space: nowrap;
+}
+.lex-qa-a {
+  padding: 0 18px 4px 52px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.lex-qa-a p {
+  margin: 0 0 14px;
+}
+.lex-qa details[open] .lex-qa-a {
+  animation: answerIn 0.45s var(--ease);
+}
+.lex-qa summary > span:last-child code {
+  font: 0.86em var(--mono);
+  color: var(--accent-2);
+}
+.quiz-level {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font: 500 10.5px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  vertical-align: 2px;
+  color: var(--accent-2);
+  border: 1px solid color-mix(in srgb, var(--accent-2) 40%, transparent);
+}
+.quiz code {
+  padding: 0.05em 0.35em;
+  border-radius: 5px;
+  font: 0.86em var(--mono);
+  color: var(--accent-2);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+/* ---- More in the Lexicon ---- */
+.lex .lex-more {
+  margin-top: 88px;
+}
+.lex-more h2 {
+  margin-bottom: 18px;
+}
+.lex-more-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 14px;
+}
+.lex-more-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+}
+.lex-more-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+.lex-more-abbr {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  font: 700 18px var(--display);
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line));
+  background: var(--bg-2);
+}
+.lex-more-card strong {
+  display: block;
+  font: 600 16px/1.3 var(--display);
+}
+.lex-more-card small {
+  font: 12px var(--mono);
+  color: var(--faint);
+}
+
+@media (max-width: 760px) {
+  .lex-qa-a {
+    padding-left: 18px;
+  }
 }
 
 /* ---- Responsive ---- */

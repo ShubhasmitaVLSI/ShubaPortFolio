@@ -1,9 +1,8 @@
-// Everything the command palette can jump to. Home sections, Lexicon entries and
-// glossary terms are static; blog posts come from /api/search at open time.
+// Everything the command palette can jump to. Home sections, pages and glossary
+// terms are static; blog posts and Lexicon entries come from /api/search at open time.
 
 import { profile } from "@/lib/data";
 import { glossary, phases } from "@/lib/dv";
-import { LEXICON } from "@/lib/lexicon";
 
 export type CommandGroup = "Sections" | "Pages" | "Lexicon" | "Blog" | "Glossary" | "Actions";
 
@@ -31,15 +30,6 @@ const pages: Command[] = [
   { id: "p-book", group: "Pages", title: "Book a call", hint: "30-minute slots", href: profile.booking, keywords: "meeting schedule talk contact" },
 ];
 
-const lexicon: Command[] = LEXICON.map((e) => ({
-  id: `l-${e.slug}`,
-  group: "Lexicon",
-  title: `${e.term} — ${e.full}`,
-  hint: `${e.level} · ${e.minutes} min`,
-  href: `/lexicon/${e.slug}`,
-  keywords: `${e.summary} ${e.related.map((r) => r.label).join(" ")}`.toLowerCase(),
-}));
-
 const terms: Command[] = glossary.map((g) => ({
   id: `g-${g.term}`,
   group: "Glossary",
@@ -54,9 +44,22 @@ const actions: Command[] = [
   { id: "a-rss", group: "Actions", title: "Subscribe via RSS", href: "/blog/rss.xml", keywords: "feed" },
 ];
 
-export const STATIC_COMMANDS: Command[] = [...pages, ...sections, ...lexicon, ...terms, ...actions];
+export const STATIC_COMMANDS: Command[] = [...pages, ...sections, ...terms, ...actions];
 
 export type SearchPost = { slug: string; title: string; description: string; tags: string[] };
+
+/** Lexicon entries, from /api/search (Markdown entries are read on the server). */
+export type SearchTerm = { slug: string; term: string; full: string; level: string; minutes: string; summary: string };
+
+export const termCommands = (terms: SearchTerm[]): Command[] =>
+  terms.map((e) => ({
+    id: `l-${e.slug}`,
+    group: "Lexicon",
+    title: e.term === e.full || !e.full || e.term.includes(" ") ? e.term : `${e.term} — ${e.full}`,
+    hint: `${e.level} · ${e.minutes} min`,
+    href: `/lexicon/${e.slug}`,
+    keywords: `${e.full} ${e.summary}`.toLowerCase(),
+  }));
 
 export const postCommands = (posts: SearchPost[]): Command[] =>
   posts.map((p) => ({

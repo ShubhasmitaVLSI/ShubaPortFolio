@@ -7,6 +7,9 @@ const LETTERS = "ABCD";
 const R = 26;
 const C = 2 * Math.PI * R;
 
+/** Renders `code` spans in question text without injecting HTML. */
+const fmt = (s: string) => s.split(/(`[^`]+`)/).map((part, i) => (/^`.*`$/.test(part) ? <code key={i}>{part.slice(1, -1)}</code> : part));
+
 /** Answer-once multiple choice with instant feedback, a score and a retry. */
 export function Quiz({ questions }: { questions: QuizQuestion[] }) {
   const [picked, setPicked] = useState<(number | null)[]>(() => questions.map(() => null));
@@ -27,7 +30,10 @@ export function Quiz({ questions }: { questions: QuizQuestion[] }) {
             <li key={q.q} className={`quiz-q ${locked ? (right ? "is-right" : "is-wrong") : ""}`}>
               <p className="quiz-prompt" id={`quiz-q-${qi}`}>
                 <span className="quiz-num">{qi + 1}</span>
-                {q.q}
+                <span>
+                  {q.level && <span className="quiz-level">{q.level}</span>}
+                  {fmt(q.q)}
+                </span>
               </p>
               <div className={`quiz-options ${q.options.length === 2 ? "two" : ""}`} role="group" aria-labelledby={`quiz-q-${qi}`}>
                 {q.options.map((o, oi) => {
@@ -44,7 +50,7 @@ export function Quiz({ questions }: { questions: QuizQuestion[] }) {
                       <span className="quiz-letter" aria-hidden="true">
                         {state === "correct" ? "✓" : state === "chosen" ? "✗" : LETTERS[oi]}
                       </span>
-                      {o}
+                      <span>{fmt(o)}</span>
                     </button>
                   );
                 })}
@@ -52,7 +58,7 @@ export function Quiz({ questions }: { questions: QuizQuestion[] }) {
               <p className="quiz-why" role="status">
                 {locked && (
                   <>
-                    <strong>{right ? "Correct." : `Not quite. The answer is ${LETTERS[q.answer]}.`}</strong> {q.why}
+                    <strong>{right ? "Correct." : `Not quite. The answer is ${LETTERS[q.answer]}.`}</strong> {fmt(q.why)}
                   </>
                 )}
               </p>
@@ -91,7 +97,7 @@ export function Quiz({ questions }: { questions: QuizQuestion[] }) {
               <strong>
                 {i + 1} — {q.options.length === 2 ? q.options[q.answer] : LETTERS[q.answer]}.
               </strong>{" "}
-              {q.why}
+              {fmt(q.why)}
             </li>
           ))}
         </ul>

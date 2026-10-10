@@ -27,6 +27,46 @@ test("the boundary diagram switches between RTL and gate-level DUT", async ({ pa
   await expect(diagram.locator(".bd-blocks")).toContainText("dfxtp");
 });
 
+test("Markdown entries render sections, flowchart, Q&A and an interactive quiz", async ({ page }) => {
+  await page.goto("/lexicon");
+  await page.getByRole("link", { name: /Verification Plan/ }).first().click();
+  await expect(page).toHaveURL(/\/lexicon\/verification-plan$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Verification Plan");
+  await expect(page.getByRole("navigation", { name: "Sections" }).getByRole("link")).toHaveCount(11);
+
+  // The Mermaid workflow renders as a diagram, with arrows back from regression as loops.
+  const flow = page.locator(".flow");
+  await expect(flow.locator(".flow-row.parallel .flow-node")).toHaveCount(3);
+  await expect(flow.locator(".flow-loops li")).toHaveCount(5);
+
+  // Q&A pairs become accordions; the knowledge check becomes the quiz.
+  const qa = page.locator("#interview-preparation details").first();
+  await qa.locator("summary").click();
+  await expect(qa.locator(".lex-qa-a")).toContainText("subset of the verification plan");
+  const quiz = page.locator("#knowledge-check .quiz");
+  await quiz.locator(".quiz-q").nth(1).getByRole("button", { name: /unreachable by construction/ }).click();
+  await expect(quiz.locator(".quiz-q").nth(1)).toHaveClass(/is-right/);
+
+  // Links to entries that don't exist yet are plain text, and editorial notes stay out.
+  await expect(page.locator('a[href="/lexicon/scoreboard"]')).toHaveCount(0);
+  await expect(page.getByText("Internal-link suggestions")).toHaveCount(0);
+});
+
+test("very tall sections still reveal on a small phone", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  await page.goto("/lexicon/verification-plan");
+  // Scroll through in-page, letting the observer run for a couple of frames per step.
+  await page.evaluate(async () => {
+    const frame = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    for (let y = 0; y < document.documentElement.scrollHeight; y += 500) {
+      window.scrollTo(0, y);
+      await frame();
+    }
+  });
+  // Sections like "The six core concepts" are many screens tall and can never be 12% visible.
+  await expect(page.locator(".lex-sec:not(.in)")).toHaveCount(0);
+});
+
 test("the knowledge check scores answers and can be retried", async ({ page }) => {
   await page.goto("/lexicon/dut#knowledge-check");
   const quiz = page.locator(".quiz");

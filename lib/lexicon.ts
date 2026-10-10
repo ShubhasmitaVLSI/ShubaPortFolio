@@ -4,7 +4,7 @@
 
 export type LexiconLink = { label: string; href?: string };
 
-export type QuizQuestion = { q: string; options: string[]; answer: number; why: string };
+export type QuizQuestion = { q: string; options: string[]; answer: number; why: string; level?: string };
 
 export type LexiconEntry = {
   slug: string;
@@ -226,5 +226,3 @@ endmodule`,
     ],
   },
 ];
-
-export const getEntry = (slug: string) => LEXICON.find((e) => e.slug === slug) ?? null;

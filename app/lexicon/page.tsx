@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { ChatWidget } from "@/components/ChatWidget";
 import { profile } from "@/lib/data";
-import { LEXICON, SECTIONS } from "@/lib/lexicon";
+import { SECTIONS } from "@/lib/lexicon";
+import { listLexicon } from "@/lib/lexicon-store";
 
 export const metadata: Metadata = {
   title: `DV Lexicon — ${profile.name}`,
@@ -10,7 +11,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/lexicon" },
 };
 
-export default function LexiconIndex() {
+export default async function LexiconIndex() {
+  const entries = await listLexicon();
   return (
     <>
       <main className="lex lex-index" id="top">
@@ -27,18 +29,16 @@ export default function LexiconIndex() {
         </header>
 
         <section className="lex-entries" aria-label="Entries">
-          {LEXICON.map((e) => (
+          {entries.map((e) => (
             <a className="lex-entry spot reveal d3" href={`/lexicon/${e.slug}`} key={e.slug}>
               <span className="lex-entry-term" aria-hidden="true">
-                {e.term}
+                {e.abbr}
               </span>
               <span className="lex-entry-body">
                 <span className="lex-entry-meta">
                   {e.track} · {e.level} · {e.minutes} min read
                 </span>
-                <strong>
-                  {e.term} — {e.full}
-                </strong>
+                <strong>{e.term === e.abbr ? `${e.term} — ${e.full}` : e.term}</strong>
                 <span className="lex-entry-summary">{e.summary}</span>
                 <span className="read-more">
                   Read the guide <span aria-hidden="true">→</span>
