@@ -65,17 +65,17 @@ test("author can switch animated day week month charts", async ({ page }, testIn
   for (const mode of ["Day", "Week", "Month"]) {
     await page.getByRole("button", { name: mode, exact: true }).click();
     await expect(page.getByRole("button", { name: mode, exact: true })).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByRole("img", { name: "Page views grouped by " + mode.toLowerCase() })).toBeVisible();
+    await expect(page.getByRole("img", { name: new RegExp("Visitors and page views by " + mode.toLowerCase()) })).toBeVisible();
     const sum = await page.locator(".visitor-chart tbody tr td:last-child").evaluateAll(cells => cells.reduce((n, cell) => n + Number(cell.textContent), 0));
     if (total === undefined) total = sum;
     expect(sum).toBe(total);
   }
-  await page.getByText("View chart data", { exact: true }).click();
+  await page.getByText("View as table", { exact: true }).click();
   await expect(page.locator(".visitor-chart table")).toBeVisible();
   await page.locator(".visitor-chart").evaluate(async el => { await Promise.all(el.getAnimations({ subtree: true }).map(a => a.finished.catch(() => {}))); });
   await page.screenshot({ path: "test-results/visitors-" + testInfo.project.name + ".png", fullPage: true });
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(page.locator(".visitor-bar").first()).toHaveCSS("animation-name", "none");
+  await expect(page.locator(".an-bar").first()).toHaveCSS("animation-name", "none");
 });
 
 test("charts run from the first recorded day, beyond the 30-day detail window", async ({ page }) => {
@@ -89,12 +89,43 @@ test("charts run from the first recorded day, beyond the 30-day detail window", 
   await fs.mkdir(process.env.ANALYTICS_DIR!, { recursive: true });
   await fs.writeFile(file, JSON.stringify({ ...JSON.parse(saved), [launch]: 7 }));
   try {
-    await page.goto("/blog/visitors");
-    await expect(page.locator(".visitor-chart")).toContainText("Since " + launch);
+    await page.goto("/blog/visitors?range=all");
+    await expect(page.locator(".an-sub").first()).toContainText("since " + launch);
     await page.getByRole("button", { name: "Month", exact: true }).click();
     await expect(page.locator(".visitor-chart tbody tr").first().locator("td").first()).toHaveText(launch.slice(0, 7));
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   } finally {
     await fs.writeFile(file, saved);
   }
+});
+
+test("dashboard turns visits into sources, places, reading time, searches and live activity", async ({ page, request }) => {
+  test.skip(process.env.ANALYTICS_TEST_AUTH !== "1", "Use the isolated analytics QA server for author checks.");
+  const visitor = {
+    origin: base,
+    "user-agent": "Mozilla/5.0 (iPhone) Mobile Chrome/130.0",
+    "x-forwarded-for": "203.0.113.7",
+    "x-vercel-ip-country": "IN",
+    "x-vercel-ip-city": "Bengaluru",
+  };
+  const query = "uvm ral " + Date.now().toString(36).replace(/\d/g, "");
+  expect((await request.post("/api/visits", { headers: visitor, data: { path: "/lexicon/dut", referrer: "www.linkedin.com" } })).status()).toBe(204);
+  expect((await request.post("/api/visits", { headers: visitor, data: { type: "engage", path: "/lexicon/dut", seconds: 95, depth: 100 } })).status()).toBe(204);
+  expect((await request.post("/api/visits", { headers: visitor, data: { type: "search", path: "/lexicon/dut", q: query, hits: 0 } })).status()).toBe(204);
+  // Personal-looking searches are dropped, not stored.
+  expect((await request.post("/api/visits", { headers: visitor, data: { type: "search", path: "/", q: "me@example.com", hits: 0 } })).status()).toBe(204);
+  expect((await request.post("/api/visits", { headers: visitor, data: { type: "engage", path: "/", seconds: "lots", depth: 10 } })).status()).toBe(400);
+
+  await author(page);
+  await page.goto("/blog/visitors?range=7d");
+  await expect(page.locator(".an-card", { hasText: "Where visits come from" })).toContainText("LinkedIn");
+  await expect(page.locator(".an-card", { hasText: "Where visitors are" })).toContainText("India");
+  await expect(page.locator(".an-card", { hasText: "Where visitors are" })).toContainText("Bengaluru");
+  await expect(page.locator(".an-pages")).toContainText("DUT");
+  const searches = page.locator(".an-searches");
+  await expect(searches.locator("li", { hasText: query })).toContainText("No results");
+  await expect(searches).not.toContainText("example.com");
+  await expect(page.locator(".an-feed li").first()).toContainText("Bengaluru, India");
+  await expect(page.locator(".an-tile", { hasText: "Live now" }).locator(".an-tile-value")).not.toHaveText("0");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

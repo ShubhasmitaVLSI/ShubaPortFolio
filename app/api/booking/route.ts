@@ -12,6 +12,7 @@ import {
 } from "@/lib/booking";
 import { profile } from "@/lib/data";
 import { busyIntervals, createMeeting, emailOwner, googleConfigured, overlaps } from "@/lib/google";
+import { recordVisit } from "@/lib/visits";
 
 export const dynamic = "force-dynamic";
 
@@ -61,6 +62,21 @@ function limited(ip: string) {
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
+/** Note the booking on the author's visitor dashboard: what the guest shared, never their email or message. */
+function noteBooking(input: BookingInput) {
+  return recordVisit({
+    kind: "booking",
+    time: new Date().toISOString(),
+    path: "/book",
+    referrer: "",
+    browser: "",
+    device: "",
+    name: input.name.split(/\s+/)[0],
+    company: input.company || undefined,
+    topic: input.topic,
+  }).catch(() => {});
+}
+
 export async function POST(request: Request) {
   const raw = (await request.json().catch(() => null)) as Record<string, unknown> | null;
   if (!raw || typeof raw !== "object") return json({ error: "Bad request" }, 400);
@@ -94,6 +110,7 @@ export async function POST(request: Request) {
   if (dryRun() && !googleConfigured()) {
     hits.get(ip)!.push(Date.now());
     const result: BookingResult = { start: input.start, end, meetLink: "https://meet.google.com/dry-run-preview", email: input.email };
+    await noteBooking(input);
     return json({ ...result, dryRun: true });
   }
 
@@ -137,6 +154,7 @@ export async function POST(request: Request) {
 <p style="color:#667;font-size:13px">Reply to this email to write to ${esc(input.name)} directly.</p></div>`,
     }).catch((e) => console.error("booking email failed", e instanceof Error ? e.message : e));
 
+    await noteBooking(input);
     const result: BookingResult = { start: input.start, end, meetLink: meeting.meetLink, email: input.email };
     return json(result);
   } catch (e) {

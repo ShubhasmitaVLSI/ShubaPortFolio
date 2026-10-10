@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { trackSearch } from "@/lib/track";
 import { STATIC_COMMANDS, postCommands, score, termCommands, type Command, type CommandGroup, type SearchPost, type SearchTerm } from "@/lib/command-index";
 
 const OPEN_EVENT = "dv:palette";
@@ -92,6 +93,11 @@ export function CommandPalette() {
     return GROUP_ORDER.map((g) => ({ label: g as string, items: ranked.filter((c) => c.group === g) })).filter((x) => x.items.length);
   }, [query, remote]);
   const flat = groups.flatMap((x) => x.items);
+
+  // What visitors look for (and find nothing for) shows up on the author dashboard.
+  useEffect(() => {
+    if (open && remote && query.trim()) trackSearch(query, flat.length);
+  }, [open, remote, query, flat.length]);
 
   useEffect(() => setActive(0), [query]);
   useEffect(() => {

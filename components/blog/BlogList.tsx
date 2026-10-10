@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PostStatus } from "@/lib/blog";
 import { useReadSlugs } from "@/components/blog/ReadingPath";
+import { trackSearch } from "@/lib/track";
 
 export type ListItem = {
   slug: string;
@@ -72,6 +73,10 @@ export default function BlogList({ posts, admin, initialQuery, initialTag }: Pro
         words.every((w) => p.search.includes(w))
     );
   }, [posts, query, tag, status]);
+
+  useEffect(() => {
+    if (query.trim()) trackSearch(query, filtered.length);
+  }, [query, filtered.length]);
 
   // Keep the URL shareable: /blog?tag=uvm&q=coverage
   useEffect(() => {

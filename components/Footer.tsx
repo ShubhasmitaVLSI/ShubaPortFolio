@@ -4,7 +4,10 @@ export default function Footer() {
   return (
     <footer className="footer">
       <span>
-        © {new Date().getFullYear()} {profile.name} · {profile.role}
+        © {new Date().getFullYear()} {profile.name} · {profile.role} ·{" "}
+        <span title="Anonymous page statistics: no cookies, no IP addresses stored; Do Not Track is respected.">
+          Cookie-free analytics
+        </span>
       </span>
       <span className="footer-links">
         <a href="/blog">Blog</a>
