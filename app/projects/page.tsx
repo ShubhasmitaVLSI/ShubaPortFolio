@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Effects from "@/components/Effects";
 import Footer from "@/components/Footer";
 import { ChatWidget } from "@/components/ChatWidget";
+import { PaletteButton } from "@/components/CommandPalette";
 import { profile, projects } from "@/lib/data";
 
 export const metadata: Metadata = {
@@ -21,6 +22,8 @@ export default function Projects() {
         <nav className="nav-links show" aria-label="Primary">
           <a href="/">← Home</a>
           <a href="/blog">Blog</a>
+          <a href="/lexicon">Lexicon</a>
+          <PaletteButton />
           <a className="nav-cta" href={profile.booking}>
             Let&apos;s talk
           </a>

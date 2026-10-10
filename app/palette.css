@@ -1,0 +1,288 @@
+/* ============ Command palette (components/CommandPalette.tsx) ============ */
+.cmdk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 10px 0 11px;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--muted);
+  transition: border-color 0.2s, color 0.2s, transform 0.3s var(--ease);
+}
+.cmdk-btn:hover,
+.cmdk-btn:focus-visible {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+.cmdk-btn svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.cmdk-btn kbd,
+.cmdk kbd {
+  padding: 1px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--line-strong);
+  font: 11px var(--mono);
+  color: var(--faint);
+  background: var(--bg-2);
+}
+/* Inside the subpage headers it sits among the links. */
+.nav-links .cmdk-btn {
+  height: 36px;
+  margin: 0 2px;
+}
+
+.cmdk {
+  width: min(640px, calc(100vw - 24px));
+  max-height: min(560px, calc(100dvh - 120px));
+  margin: 12vh auto auto;
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  color: var(--ink);
+  overflow: visible;
+}
+.cmdk[open] {
+  animation: cmdkIn 0.32s var(--ease);
+}
+.cmdk::backdrop {
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: cmdkFade 0.3s ease;
+}
+@keyframes cmdkIn {
+  from {
+    opacity: 0;
+    scale: 0.96;
+    translate: 0 -10px;
+  }
+}
+@keyframes cmdkFade {
+  from {
+    opacity: 0;
+  }
+}
+.cmdk-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: inherit;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent), 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+.cmdk-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.cmdk-prompt {
+  font: 600 14px var(--mono);
+  color: var(--accent);
+}
+.cmdk-input input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  font: 16px var(--sans);
+  color: var(--ink);
+  caret-color: var(--accent);
+}
+.cmdk-input input::placeholder {
+  color: var(--faint);
+}
+.cmdk-list {
+  flex: 1;
+  margin: 0;
+  padding: 6px 8px 8px;
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.cmdk-list ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cmdk-group {
+  margin: 10px 10px 4px;
+  font: 500 10.5px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--faint);
+}
+.cmdk-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  animation: cmdkRow 0.32s var(--ease) both;
+  animation-delay: calc(var(--i) * 22ms);
+}
+@keyframes cmdkRow {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+/* The active row carries a signal bar, like a selected wave in a viewer. */
+.cmdk-item.on {
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+}
+.cmdk-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(var(--accent), var(--accent-2));
+  scale: 1 0;
+  transition: scale 0.25s var(--ease);
+}
+.cmdk-item.on::before {
+  scale: 1 1;
+}
+.cmdk-icon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+  display: grid;
+  place-items: center;
+  font: 600 10px var(--mono);
+  color: var(--accent);
+}
+.cmdk-icon::after {
+  content: "§";
+}
+.cmdk-icon.g-pages::after {
+  content: "◇";
+}
+.cmdk-icon.g-lexicon::after {
+  content: "Aa";
+  color: var(--accent-2);
+}
+.cmdk-icon.g-blog::after {
+  content: "✎";
+}
+.cmdk-icon.g-glossary::after {
+  content: "#";
+  color: var(--accent-2);
+}
+.cmdk-icon.g-actions::after {
+  content: "↗";
+}
+.cmdk-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+}
+.cmdk-hint {
+  flex: none;
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-left: auto;
+  font: 12px var(--mono);
+  color: var(--faint);
+}
+.cmdk-go {
+  flex: none;
+  width: 18px;
+  text-align: center;
+  font: 13px var(--mono);
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.cmdk-item.on .cmdk-go {
+  opacity: 1;
+}
+.cmdk-hint + .cmdk-go {
+  margin-left: 0;
+}
+.cmdk-title + .cmdk-go {
+  margin-left: auto;
+}
+.cmdk-empty {
+  margin: 0;
+  padding: 22px 18px 26px;
+  text-align: center;
+  color: var(--muted);
+}
+.cmdk-empty button {
+  font: 13px var(--mono);
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.cmdk-foot {
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 10px 16px;
+  border-top: 1px solid var(--line);
+  font: 11.5px var(--mono);
+  color: var(--faint);
+}
+.cmdk-foot span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+@media (max-width: 760px) {
+  .cmdk-btn kbd {
+    display: none;
+  }
+  .cmdk-btn {
+    width: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+  .nav-links .cmdk-btn {
+    width: 34px;
+    height: 34px;
+  }
+  .cmdk {
+    margin-top: 72px;
+  }
+  .cmdk-hint {
+    display: none;
+  }
+  .cmdk-foot,
+  .cmdk-esc {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cmdk[open],
+  .cmdk::backdrop,
+  .cmdk-item {
+    animation: none;
+  }
+}

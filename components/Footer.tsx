@@ -8,6 +8,7 @@ export default function Footer() {
       </span>
       <span className="footer-links">
         <a href="/blog">Blog</a>
+        <a href="/lexicon">Lexicon</a>
         <a href={profile.linkedin} target="_blank" rel="noreferrer">
           LinkedIn
         </a>

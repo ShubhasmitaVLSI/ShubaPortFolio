@@ -42,7 +42,7 @@
   --faint: #a0718a;
   --line: rgba(190, 24, 93, 0.12);
   --line-strong: rgba(190, 24, 93, 0.26);
-  --accent: #db2777;
+  --accent: #be185d;
   --accent-2: #7c3aed;
   --accent-3: #0d9488;
   --accent-ink: #ffffff;
@@ -88,7 +88,7 @@
   background: linear-gradient(135deg, #120818 30%, #e879f9 30% 55%, #fdba74 55% 78%, #7dd3fc 78%);
 }
 .swatch-blush {
-  background: linear-gradient(135deg, #fff6f8 30%, #db2777 30% 55%, #7c3aed 55% 78%, #0d9488 78%);
+  background: linear-gradient(135deg, #fff6f8 30%, #be185d 30% 55%, #7c3aed 55% 78%, #0d9488 78%);
 }
 .swatch-lilac {
   background: linear-gradient(135deg, #f8f6ff 30%, #7c3aed 30% 55%, #db2777 55% 78%, #0891b2 78%);

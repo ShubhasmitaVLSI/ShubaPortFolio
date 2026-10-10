@@ -1,4 +1,5 @@
 import { logout } from "@/app/blog/actions";
+import { PaletteButton } from "@/components/CommandPalette";
 import { currentAdmin } from "@/lib/auth";
 
 export default async function BlogHeader() {
@@ -14,6 +15,8 @@ export default async function BlogHeader() {
           Home
         </a>
         <a href="/blog">Blog</a>
+        <a href="/lexicon">Lexicon</a>
+        <PaletteButton />
         {admin ? (
           <>
             <a href="/blog/manage">Manage</a>

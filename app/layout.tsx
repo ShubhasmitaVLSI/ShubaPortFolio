@@ -5,6 +5,8 @@ import "./motion.css";
 import "./dv.css";
 import "./booking.css";
 import "./explore.css";
+import "./palette.css";
+import { CommandPalette } from "@/components/CommandPalette";
 import { profile } from "@/lib/data";
 import { glossary, seoKeywords } from "@/lib/dv";
 
@@ -65,6 +67,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <style>{`html.js [data-reveal],.reveal,.letter,.stagger>*{opacity:1!important;transform:none!important;translate:none!important;clip-path:none!important;filter:none!important}.boot{display:none!important}`}</style>
         </noscript>
         {children}
+        <CommandPalette />
       </body>
     </html>
   );

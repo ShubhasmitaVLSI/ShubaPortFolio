@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { PaletteButton } from "@/components/CommandPalette";
 import { profile } from "@/lib/data";
 
 const links = [
   { href: "#atlas", label: "Atlas" },
   { href: "#work", label: "Work" },
-  { href: "#schema", label: "Schema" },
   { href: "#experience", label: "Experience" },
   { href: "#stack", label: "Skills" },
   { href: "#roadmap", label: "Roadmap" },
+  { href: "/lexicon", label: "Lexicon" },
   { href: "/blog", label: "Blog" },
 ];
 
@@ -122,6 +123,7 @@ export default function Nav() {
         </a>
       </nav>
       <div className="nav-tools">
+        <PaletteButton />
         <div className="palette" ref={paletteRef}>
           <button
             className="palette-btn"

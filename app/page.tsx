@@ -141,6 +141,11 @@ export default function Home() {
           }
         >
           <Glossary />
+          <div className="actions">
+            <a className="btn ghost" href="/lexicon">
+              Go deeper in the DV Lexicon →
+            </a>
+          </div>
         </Section>
 
         <Section
